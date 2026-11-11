@@ -180,7 +180,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
       color: params.color || '#00ae42',
       roughness: roughness,
       metalness: metalness,
-      flatShading: false
+      flatShading: true
     });
 
     const mesh = new THREE.Mesh(geometry, material);

@@ -9,11 +9,37 @@ let cachedFont = null;
 
 export async function loadDefaultFont() {
   if (cachedFont) return cachedFont;
-  const res = await fetch('/fonts/helvetiker_bold.typeface.json');
-  const json = await res.json();
-  const loader = new FontLoader();
-  cachedFont = loader.parse(json);
-  return cachedFont;
+  
+  // Resilient multi-candidate font path loader (supports Vite base './', GitHub Pages subpaths, and root paths)
+  const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) ? import.meta.env.BASE_URL : './';
+  const cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+  
+  const candidates = [
+    `${cleanBase}fonts/helvetiker_bold.typeface.json`,
+    './fonts/helvetiker_bold.typeface.json',
+    'fonts/helvetiker_bold.typeface.json',
+    '/fonts/helvetiker_bold.typeface.json'
+  ];
+
+  let lastError = null;
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const text = await res.text();
+        if (text.trim().startsWith('{')) {
+          const json = JSON.parse(text);
+          const loader = new FontLoader();
+          cachedFont = loader.parse(json);
+          return cachedFont;
+        }
+      }
+    } catch (e) {
+      lastError = e;
+    }
+  }
+
+  throw new Error(`Failed to load font from any candidate path: ${lastError ? lastError.message : 'Not Found'}`);
 }
 
 /**
@@ -100,12 +126,11 @@ export function createBaseCardBrush(h = 2.4, includeHole = true, holePos = HANGI
 }
 
 /**
- * 1. Pro Swatch Card with Rich Online-inspired Features (Scaled to 150%: 127.5 x 75.0 mm)
- * 5-step translucency with relief icons, line width ribs, hole gauge, optical steps, specs badge
+ * 1. Pro Swatch Card with 6-Zone Non-colliding Layout (Scaled to 150%: 127.5 x 75.0 mm)
+ * 5-step translucency with clean flat floors (0.2-1.0mm), line width ribs, hole gauge, optical steps, specs badge
  * Card thickness (2.4mm) and test hole diameters (Ø4.5mm hanging, Ø2/3/4mm gauge) remain 100% constant.
  */
 export function generateSwatchCard(params, font) {
-  const S = CARD_SCALE;
   const h = 2.4;
   let cardBrush = createBaseCardBrush(h, params.includeHole !== false);
 
@@ -120,17 +145,18 @@ export function generateSwatchCard(params, font) {
   const badgeGeos = [];
   const gaugeGeos = [];
 
-  // 1. Top Row: 5 Translucent Stepped Windows (0.2, 0.4, 0.6, 0.8, 1.0mm)
-  const steps = params.translucentSteps || [0.2, 0.4, 0.6, 0.8, 1.0];
-  const winW = 8.5 * S;
-  const winD = 12.0 * S;
-  const startX = -13.5 * S;
-  const spacingX = 10.8 * S;
-  const winY = 15.5 * S;
-
   const debossDepth = 0.45;
   const textZ = h - debossDepth;
   const textDepth = 0.8;
+
+  // Zone 1. Top Row: 5 Translucent Stepped Windows (0.2, 0.4, 0.6, 0.8, 1.0mm)
+  // Clean flat pocket floors for pure optical light calibration (no non-manifold coplanar discs)
+  const steps = params.translucentSteps || [0.2, 0.4, 0.6, 0.8, 1.0];
+  const winW = 11.0;
+  const winD = 16.0;
+  const startX = -16.0;
+  const spacingX = 14.5;
+  const winY = 22.0;
 
   steps.forEach((t, i) => {
     const cutoutH = Math.max(0.2, h - t);
@@ -138,36 +164,28 @@ export function generateSwatchCard(params, font) {
     winGeo.translate(startX + i * spacingX, winY, t + cutoutH);
     winGeos.push(winGeo.toNonIndexed());
 
-    // Relief circle inside window to test lithophane/backlight contrast
-    const reliefR = 2.2 * S;
-    const reliefH = 0.2;
-    const relGeo = new THREE.CylinderGeometry(reliefR, reliefR, reliefH, 16);
-    relGeo.rotateX(Math.PI / 2);
-    relGeo.translate(startX + i * spacingX, winY, t + reliefH / 2);
-    addGeos.push(relGeo.toNonIndexed());
-
     // Engraved thickness label underneath window (0.45mm debossed)
     const lbl = new TextGeometry(`${Number(t).toFixed(1)}`, {
-      font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false
+      font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false
     });
     lbl.computeBoundingBox();
     const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(startX + i * spacingX - lw / 2, winY - 8.6 * S, textZ);
+    lbl.translate(startX + i * spacingX - lw / 2, 10.5, textZ);
     winLabelGeos.push(lbl.toNonIndexed());
   });
 
-  // 2. Left Column: Specs Badge (Engraved 0.45mm, positioned cleanly inside card boundary)
+  // Zone 2. Left Column: Specs Badge (Engraved 0.45mm, placed at X=-56.0, ending at X~-31, completely clear of Window 0)
   const brand = (params.brand || 'BAMBU LAB').toUpperCase();
   const material = (params.material || 'PLA BASIC').toUpperCase();
   const tempStr = `${params.nozzleTemp || 220}C / ${params.bedTemp || 55}C`;
   const speedStr = `${params.bridgeSpeed || 50}mm/s | ${params.flowRatio || 0.98}`;
-  const badgeX = -35.0 * S;
+  const badgeX = -56.0;
 
   const textLines = [
-    { text: brand, size: 3.2 * S, x: badgeX, y: 5.0 * S },
-    { text: material, size: 2.8 * S, x: badgeX, y: 0.8 * S },
-    { text: tempStr, size: 2.2 * S, x: badgeX, y: -4.0 * S },
-    { text: speedStr, size: 2.2 * S, x: badgeX, y: -8.5 * S }
+    { text: brand, size: 3.2, x: badgeX, y: 6.0 },
+    { text: material, size: 2.8, x: badgeX, y: 1.0 },
+    { text: tempStr, size: 2.3, x: badgeX, y: -4.5 },
+    { text: speedStr, size: 2.3, x: badgeX, y: -9.5 }
   ];
   textLines.forEach(l => {
     const tGeo = new TextGeometry(l.text, { font: font, size: l.size, depth: textDepth, curveSegments: 1, bevelEnabled: false });
@@ -175,53 +193,53 @@ export function generateSwatchCard(params, font) {
     badgeGeos.push(tGeo.toNonIndexed());
   });
 
-  // 3. Center: Line Width & Slot Resolution Gauge
-  const ribX = -12.0 * S;
-  const ribWidths = [0.25 * S, 0.45 * S, 0.65 * S, 0.85 * S];
+  // Zone 3. Center: Line Width & Slot Resolution Gauge
+  const ribX = -18.0;
+  const ribWidths = [0.3, 0.5, 0.7, 0.9];
   ribWidths.forEach((rw, idx) => {
-    const rx = ribX + idx * 3.5 * S;
-    const rib = new THREE.BoxGeometry(rw, 12.0 * S, 0.4);
-    rib.translate(rx, -4.0 * S, h + 0.2);
+    const rx = ribX + idx * 4.5;
+    const rib = new THREE.BoxGeometry(rw, 14.0, 0.4);
+    rib.translate(rx, -4.5, h + 0.2);
     addGeos.push(rib.toNonIndexed());
   });
-  const ribLbl = new TextGeometry("RIBS 0.2-0.8", { font: font, size: 1.8 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const ribLbl = new TextGeometry("RIBS 0.3-0.9", { font: font, size: 2.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   ribLbl.computeBoundingBox();
   const rw = ribLbl.boundingBox.max.x - ribLbl.boundingBox.min.x;
-  ribLbl.translate(-6.5 * S - rw / 2, -13.0 * S, textZ);
+  ribLbl.translate(-11.25 - rw / 2, -18.0, textZ);
   gaugeGeos.push(ribLbl.toNonIndexed());
 
-  // 4. Center-Right: Hole Shrinkage Gauge (Ø2.0, Ø3.0, Ø4.0mm) - Hole sizes strictly preserved!
+  // Zone 4. Center-Right: Hole Shrinkage Gauge (Ø2.0, Ø3.0, Ø4.0mm) - Hole diameters strictly preserved!
   const holes = [2.0, 3.0, 4.0];
-  const holeX = 6.0 * S;
+  const holeX = 8.0;
   holes.forEach((d, idx) => {
-    const hx = holeX + idx * 7.0 * S;
+    const hx = holeX + idx * 10.0;
     const hGeo = new THREE.CylinderGeometry(d / 2, d / 2, h * 2, 24);
     hGeo.rotateX(Math.PI / 2);
-    hGeo.translate(hx, -4.0 * S, h / 2);
+    hGeo.translate(hx, -4.5, h / 2);
     holeGeos.push(hGeo.toNonIndexed());
 
-    const dLbl = new TextGeometry(`D${d}`, { font: font, size: 1.9 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const dLbl = new TextGeometry(`D${d}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     dLbl.computeBoundingBox();
     const dw = dLbl.boundingBox.max.x - dLbl.boundingBox.min.x;
-    dLbl.translate(hx - dw / 2, -13.0 * S, textZ);
+    dLbl.translate(hx - dw / 2, -18.0, textZ);
     gaugeGeos.push(dLbl.toNonIndexed());
   });
 
-  // 5. Right: Optical Specular Steps
+  // Zone 5. Right: Optical Specular Steps
   const stepLevels = [0.4, 0.8, 1.2, 1.6];
-  const stepStartX = 28.5 * S;
+  const stepStartX = 38.0;
   stepLevels.forEach((lvl, idx) => {
-    const sx = stepStartX + idx * 3.0 * S;
-    const sGeo = new THREE.BoxGeometry(2.8 * S, 14.0 * S, lvl);
-    sGeo.translate(sx, -4.0 * S, h + lvl / 2);
+    const sx = stepStartX + idx * 5.0;
+    const sGeo = new THREE.BoxGeometry(4.0, 16.0, lvl);
+    sGeo.translate(sx, -4.5, h + lvl / 2);
     addGeos.push(sGeo.toNonIndexed());
   });
 
-  // Bottom footer title - updated to SWATCH 128x75 reflecting 150% standard dimensions
-  const botTxt = new TextGeometry("SWATCH 128x75", { font: font, size: 2.5 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // Zone 6. Bottom footer title: SWATCH 128x75
+  const botTxt = new TextGeometry("SWATCH 128x75", { font: font, size: 2.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   botTxt.computeBoundingBox();
   const bw = botTxt.boundingBox.max.x - botTxt.boundingBox.min.x;
-  botTxt.translate(-bw / 2, -21.0 * S, textZ);
+  botTxt.translate(-bw / 2, -28.0, textZ);
   gaugeGeos.push(botTxt.toNonIndexed());
 
   evaluator.useCDTClipping = true;
@@ -240,7 +258,7 @@ export function generateSwatchCard(params, font) {
     cardBrush = evaluator.evaluate(cardBrush, holeBrush, SUBTRACTION);
   }
 
-  // Step 3: Subtract engraved text markings in focused passes for numerical stability
+  // Step 3: Subtract engraved text markings
   if (badgeGeos.length > 0) {
     const badgeBrush = new Brush(BufferGeometryUtils.mergeGeometries(badgeGeos, false));
     badgeBrush.updateMatrixWorld();
@@ -257,7 +275,7 @@ export function generateSwatchCard(params, font) {
     cardBrush = evaluator.evaluate(cardBrush, gaugeBrush, SUBTRACTION);
   }
 
-  // Step 4: Additive features (relief circles, ribs, optical steps) merged into single mesh
+  // Step 4: Additive features (ribs, optical steps) merged into single mesh
   let finalGeo = safeMergeGeometries([cardBrush.geometry, ...addGeos]);
   finalGeo = healMesh(finalGeo, 1e-4);
 
@@ -279,6 +297,7 @@ export function generateSwatchCard(params, font) {
 /**
  * 2. Bridge Calibration Card with Dual-track (Narrow/Wide), Through-windows & Droop Steps (Scaled to 150%: 127.5 x 75.0 mm)
  * Spans scaled proportionally (15 to 75mm); Droop measurement step heights (1 to 5mm) and card thickness remain constant.
+ * Layout completely non-colliding: Bridges row Y in [-18, 22], Banner at Y = -31, Droop steps at X = -54.
  */
 export function generateBridgeCard(params, font) {
   const S = CARD_SCALE;
@@ -299,14 +318,15 @@ export function generateBridgeCard(params, font) {
     Math.round(maxSpan)
   ];
 
-  const rowY = [-17.0 * S, -8.5 * S, 0.0, 8.5 * S, 17.0 * S];
-  const centerX = 3.0 * S;
+  // 5 rows leaving clean 3mm gap between every station
+  const rowY = [-18.0, -8.0, 2.0, 12.0, 22.0];
+  const centerX = 6.0;
   const pillarH = params.bridgePillarHeight || 7.0; // Height unchanged
-  const pillarW = 3.5 * S;
-  const wNarrow = 1.6 * S;
-  const wGap = 1.2 * S;
-  const wWide = 3.2 * S;
-  const stationD = wNarrow + wGap + wWide;
+  const pillarW = 4.0;
+  const wNarrow = 2.0;
+  const wGap = 1.4;
+  const wWide = 3.6;
+  const stationD = wNarrow + wGap + wWide; // 7.0mm
 
   const addGeos = [];
   const subGeos = [];
@@ -337,38 +357,39 @@ export function generateBridgeCard(params, font) {
     addGeos.push(bWide.toNonIndexed());
 
     // Through-plate light inspection cutout under bridge
-    const windowCutout = new THREE.BoxGeometry(span - 2.0 * S, stationD - 0.8 * S, h * 2);
+    const windowCutout = new THREE.BoxGeometry(span - 2.0, stationD - 1.0, h * 2);
     windowCutout.translate(centerX, y, h / 2);
     subGeos.push(windowCutout.toNonIndexed());
 
     // Engraved Span label on card base to left of pillar
-    const lbl = new TextGeometry(`${span}`, { font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(`${span}`, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(centerX - span / 2 - pillarW - lw - 1.2 * S, y - 0.9 * S, textZ);
+    lbl.translate(centerX - span / 2 - pillarW - lw - 1.5, y - 1.0, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // Droop reference steps on left side (1mm, 2mm, 3mm, 4mm, 5mm) - Heights strictly preserved!
+  // Droop reference steps on left side (1mm, 2mm, 3mm, 4mm, 5mm)
+  // Positioned along Y in [-24.0, 8.0] at X=-54.0, comfortably clear of hanging hole at (-51.75, 24.0)
   for (let s = 1; s <= 5; s++) {
-    const sy = -16.0 * S + (s - 1) * 6.5 * S;
-    const step = new THREE.BoxGeometry(3.0 * S, 4.0 * S, s);
-    step.translate(-35.0 * S, sy, h + s / 2);
+    const sy = -24.0 + (s - 1) * 8.0;
+    const step = new THREE.BoxGeometry(4.0, 4.5, s);
+    step.translate(-54.0, sy, h + s / 2);
     addGeos.push(step.toNonIndexed());
 
-    const slbl = new TextGeometry(`${s}`, { font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const slbl = new TextGeometry(`${s}`, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     slbl.computeBoundingBox();
     const sw = slbl.boundingBox.max.x - slbl.boundingBox.min.x;
-    slbl.translate(-39.5 * S, sy - 0.9 * S, textZ);
+    slbl.translate(-49.5, sy - 1.0, textZ);
     textGeos.push(slbl.toNonIndexed());
   }
 
-  // Parameter Banner
+  // Parameter Banner: cleanly placed at bottom Y = -31.0 (cleanly 6.5mm below lowest bridge at Y = -21.5)
   const banner = `SPEED: ${params.bridgeSpeed || 50}mm/s | FLOW: ${params.bridgeFlow || 0.95}`;
-  const bannerText = new TextGeometry(banner, { font: font, size: 2.4 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const bannerText = new TextGeometry(banner, { font: font, size: 3.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   bannerText.computeBoundingBox();
   const bannerCenterX = (bannerText.boundingBox.max.x + bannerText.boundingBox.min.x) / 2;
-  bannerText.translate(-bannerCenterX, -21.0 * S, textZ);
+  bannerText.translate(centerX - bannerCenterX, -31.0, textZ);
   textGeos.push(bannerText.toNonIndexed());
 
   // Cut light inspection windows under bridges with CDT
