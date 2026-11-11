@@ -599,10 +599,11 @@ export function generateFuzzySkinCard(params, font) {
   let cardBrush = new Brush(extrudeGeo); cardBrush.updateMatrixWorld();
 
   // Hanging hole Ø4.5mm (hole diameter unchanged)
+  // Note: Card face lies in X-Z plane and thickness is in Y.
+  // Cylinder height is along Y by default, which correctly cuts a round circle in the X-Z plane without rotateX.
   if (params.includeHole !== false) {
     const holeGeo = new THREE.CylinderGeometry(HANGING_HOLE_R, HANGING_HOLE_R, cardThick * 2, 32);
-    holeGeo.rotateX(Math.PI / 2);
-    holeGeo.translate(-34.5 * S, 0, 40.0 * S);
+    holeGeo.translate(-34.5 * S, 0, 61.5);
     const holeBrush = new Brush(holeGeo);
     holeBrush.updateMatrixWorld();
     cardBrush = evaluator.evaluate(cardBrush, holeBrush, SUBTRACTION);
