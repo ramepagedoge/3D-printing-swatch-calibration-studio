@@ -164,37 +164,37 @@ export function generateSwatchCard(params, font) {
     winGeo.translate(startX + i * spacingX, winY, t + cutoutH);
     winGeos.push(winGeo.toNonIndexed());
 
-    // Engraved thickness label underneath window (0.45mm debossed)
+    // Engraved thickness label underneath window (0.45mm debossed, enlarged to 150%)
     const lbl = new TextGeometry(`${Number(t).toFixed(1)}`, {
-      font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false
+      font: font, size: 3.6, depth: textDepth, curveSegments: 1, bevelEnabled: false
     });
     lbl.computeBoundingBox();
     const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(startX + i * spacingX - lw / 2, 10.5, textZ);
+    lbl.translate(startX + i * spacingX - lw / 2, 9.5, textZ);
     winLabelGeos.push(lbl.toNonIndexed());
   });
 
-  // Zone 2. Left Column: Specs Badge (Engraved 0.45mm, placed at X=-56.0, ending at X~-31, completely clear of Window 0)
+  // Zone 2. Left Column: Specs Badge (Engraved 0.45mm, enlarged to >= 150%)
   const brand = (params.brand || 'BAMBU LAB').toUpperCase();
   const material = (params.material || 'PLA BASIC').toUpperCase();
   const tempStr = `${params.nozzleTemp || 220}C / ${params.bedTemp || 55}C`;
   const speedStr = `${params.bridgeSpeed || 50}mm/s | ${params.flowRatio || 0.98}`;
-  const badgeX = -56.0;
+  const badgeX = -58.0;
 
-  // Auto-fit brand font size if custom brand name is longer than 30mm
-  let brandSize = 3.2;
+  // Auto-fit brand font size (scaled to 150%: target 4.6, constrained to max 34mm width)
+  let brandSize = 4.6;
   const testBrandGeo = new TextGeometry(brand, { font: font, size: brandSize, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   testBrandGeo.computeBoundingBox();
   const testBrandW = testBrandGeo.boundingBox.max.x - testBrandGeo.boundingBox.min.x;
-  if (testBrandW > 30.0) {
-    brandSize = Math.max(2.0, brandSize * (30.0 / testBrandW));
+  if (testBrandW > 34.0) {
+    brandSize = Math.max(2.8, brandSize * (34.0 / testBrandW));
   }
 
   const textLines = [
-    { text: brand, size: brandSize, x: badgeX, y: 6.0 },
-    { text: material, size: 2.8, x: badgeX, y: 1.0 },
-    { text: tempStr, size: 2.3, x: badgeX, y: -4.5 },
-    { text: speedStr, size: 2.3, x: badgeX, y: -9.5 }
+    { text: brand, size: brandSize, x: badgeX, y: 4.5 },
+    { text: material, size: 4.0, x: badgeX, y: -1.0 },
+    { text: tempStr, size: 3.4, x: badgeX, y: -6.5 },
+    { text: speedStr, size: 3.4, x: badgeX, y: -12.0 }
   ];
   textLines.forEach(l => {
     const tGeo = new TextGeometry(l.text, { font: font, size: l.size, depth: textDepth, curveSegments: 1, bevelEnabled: false });
@@ -211,7 +211,7 @@ export function generateSwatchCard(params, font) {
     rib.translate(rx, -4.5, h + 0.2);
     addGeos.push(rib.toNonIndexed());
   });
-  const ribLbl = new TextGeometry("RIBS 0.3-0.9", { font: font, size: 2.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const ribLbl = new TextGeometry("RIBS 0.3-0.9", { font: font, size: 3.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   ribLbl.computeBoundingBox();
   const rw = ribLbl.boundingBox.max.x - ribLbl.boundingBox.min.x;
   ribLbl.translate(-11.25 - rw / 2, -18.0, textZ);
@@ -227,7 +227,7 @@ export function generateSwatchCard(params, font) {
     hGeo.translate(hx, -4.5, h / 2);
     holeGeos.push(hGeo.toNonIndexed());
 
-    const dLbl = new TextGeometry(`D${d}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const dLbl = new TextGeometry(`D${d}`, { font: font, size: 3.3, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     dLbl.computeBoundingBox();
     const dw = dLbl.boundingBox.max.x - dLbl.boundingBox.min.x;
     dLbl.translate(hx - dw / 2, -18.0, textZ);
@@ -245,9 +245,10 @@ export function generateSwatchCard(params, font) {
   });
 
   // Zone 6. Bottom footer title: SWATCH 128x75
-  const botTxt = new TextGeometry("SWATCH 128x75", { font: font, size: 2.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const botTxt = new TextGeometry("SWATCH 128x75", { font: font, size: 4.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   botTxt.computeBoundingBox();
   const bw = botTxt.boundingBox.max.x - botTxt.boundingBox.min.x;
+  botTxt.translate(-bw / 2, -29.0, textZ);
   botTxt.translate(-bw / 2, -28.0, textZ);
   gaugeGeos.push(botTxt.toNonIndexed());
 
@@ -329,13 +330,15 @@ export function generateBridgeCard(params, font) {
 
   // 5 rows leaving clean 3mm gap between every station
   const rowY = [-18.0, -8.0, 2.0, 12.0, 22.0];
-  const centerX = 6.0;
   const pillarH = params.bridgePillarHeight || 7.0; // Height unchanged
   const pillarW = 4.0;
   const wNarrow = 2.0;
   const wGap = 1.4;
   const wWide = 3.6;
   const stationD = wNarrow + wGap + wWide; // 7.0mm
+
+  // Left-aligned: All bridge left support pillars share the exact same X position!
+  const leftPillarX = -26.0;
 
   const addGeos = [];
   const subGeos = [];
@@ -347,58 +350,62 @@ export function generateBridgeCard(params, font) {
   spans.forEach((span, i) => {
     const y = rowY[i];
 
-    // Left and right support pillars
+    // Left support pillar (left-aligned at leftPillarX)
     const pLeft = new THREE.BoxGeometry(pillarW, stationD, pillarH);
-    pLeft.translate(centerX - span / 2 - pillarW / 2, y, h + pillarH / 2);
+    pLeft.translate(leftPillarX, y, h + pillarH / 2);
     addGeos.push(pLeft.toNonIndexed());
 
+    // Right support pillar (at leftPillarX + pillarW + span)
+    const rightPillarX = leftPillarX + pillarW + span;
     const pRight = new THREE.BoxGeometry(pillarW, stationD, pillarH);
-    pRight.translate(centerX + span / 2 + pillarW / 2, y, h + pillarH / 2);
+    pRight.translate(rightPillarX, y, h + pillarH / 2);
     addGeos.push(pRight.toNonIndexed());
 
-    // Dual Bridge rails: Narrow & Wide
+    // Dual Bridge rails: Narrow & Wide, spanning rightwards from left pillar
+    const railCenterX = leftPillarX + pillarW / 2 + span / 2;
     const bNarrow = new THREE.BoxGeometry(span, wNarrow, 1.2);
-    bNarrow.translate(centerX, y - stationD / 2 + wNarrow / 2, h + pillarH - 0.6);
+    bNarrow.translate(railCenterX, y - stationD / 2 + wNarrow / 2, h + pillarH - 0.6);
     addGeos.push(bNarrow.toNonIndexed());
 
     const bWide = new THREE.BoxGeometry(span, wWide, 1.2);
-    bWide.translate(centerX, y + stationD / 2 - wWide / 2, h + pillarH - 0.6);
+    bWide.translate(railCenterX, y + stationD / 2 - wWide / 2, h + pillarH - 0.6);
     addGeos.push(bWide.toNonIndexed());
 
     // Through-plate light inspection cutout under bridge
     const windowCutout = new THREE.BoxGeometry(span - 2.0, stationD - 1.0, h * 2);
-    windowCutout.translate(centerX, y, h / 2);
+    windowCutout.translate(railCenterX, y, h / 2);
     subGeos.push(windowCutout.toNonIndexed());
 
-    // Engraved Span label on card base to left of pillar
-    const lbl = new TextGeometry(`${span}`, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    // Engraved Span label on card base to left of pillar (enlarged to 150%: size 3.6)
+    const lbl = new TextGeometry(`${span}`, { font: font, size: 3.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(centerX - span / 2 - pillarW - lw - 1.5, y - 1.0, textZ);
+    lbl.translate(leftPillarX - pillarW / 2 - lw - 2.5, y - 1.6, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
   // Droop reference steps on left side (1mm, 2mm, 3mm, 4mm, 5mm)
-  // Positioned along Y in [-24.0, 8.0] at X=-54.0, comfortably clear of hanging hole at (-51.75, 24.0)
+  // Scaled up text to 150% (size 3.6)
   for (let s = 1; s <= 5; s++) {
     const sy = -24.0 + (s - 1) * 8.0;
     const step = new THREE.BoxGeometry(4.0, 4.5, s);
     step.translate(-54.0, sy, h + s / 2);
     addGeos.push(step.toNonIndexed());
 
-    const slbl = new TextGeometry(`${s}`, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const slbl = new TextGeometry(`${s}`, { font: font, size: 3.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     slbl.computeBoundingBox();
     const sw = slbl.boundingBox.max.x - slbl.boundingBox.min.x;
-    slbl.translate(-49.5, sy - 1.0, textZ);
+    slbl.translate(-49.5, sy - 1.6, textZ);
     textGeos.push(slbl.toNonIndexed());
   }
 
-  // Parameter Banner: cleanly placed at bottom Y = -31.0 (cleanly 6.5mm below lowest bridge at Y = -21.5)
+  // Parameter Banner: cleanly placed at bottom Y = -31.0 (enlarged to 140%: size 4.2)
   const banner = `SPEED: ${params.bridgeSpeed || 50}mm/s | FLOW: ${params.bridgeFlow || 0.95}`;
-  const bannerText = new TextGeometry(banner, { font: font, size: 3.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const bannerText = new TextGeometry(banner, { font: font, size: 4.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   bannerText.computeBoundingBox();
-  const bannerCenterX = (bannerText.boundingBox.max.x + bannerText.boundingBox.min.x) / 2;
-  bannerText.translate(centerX - bannerCenterX, -31.0, textZ);
+  const bannerW = bannerText.boundingBox.max.x - bannerText.boundingBox.min.x;
+  bannerText.translate(-bannerW / 2, -31.0, textZ);
+  textGeos.push(bannerText.toNonIndexed());
   textGeos.push(bannerText.toNonIndexed());
 
   // Cut light inspection windows under bridges with CDT
