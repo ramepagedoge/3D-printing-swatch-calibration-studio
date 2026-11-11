@@ -81,6 +81,10 @@ export function generateSwatchCard(params, font) {
   const spacingX = 10.8;
   const winY = 15.5;
 
+  const debossDepth = 0.45;
+  const textZ = h - debossDepth;
+  const textDepth = 0.8;
+
   steps.forEach((t, i) => {
     const cutoutH = Math.max(0.2, h - t);
     const winGeo = new THREE.BoxGeometry(winW, winD, cutoutH * 2);
@@ -95,15 +99,15 @@ export function generateSwatchCard(params, font) {
     relGeo.translate(startX + i * spacingX, winY, t + reliefH / 2);
     addGeos.push(relGeo.toNonIndexed());
 
-    // Raised thickness label underneath window
+    // Engraved thickness label underneath window (0.45mm debossed)
     const lbl = new TextGeometry(`${Number(t).toFixed(1)}`, {
-      font: font, size: 1.6, depth: 0.35, curveSegments: 1, bevelEnabled: false
+      font: font, size: 1.6, depth: textDepth, curveSegments: 1, bevelEnabled: false
     });
-    lbl.translate(startX + i * spacingX - 2.2, winY - 8.2, h);
+    lbl.translate(startX + i * spacingX - 2.2, winY - 8.2, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // 2. Left Column: Specs Badge (Raised 0.35mm)
+  // 2. Left Column: Specs Badge (Engraved 0.45mm)
   const brand = (params.brand || 'BAMBU LAB').toUpperCase();
   const material = (params.material || 'PLA BASIC').toUpperCase();
   const tempStr = `${params.nozzleTemp || 220}C / ${params.bedTemp || 55}C`;
@@ -116,8 +120,8 @@ export function generateSwatchCard(params, font) {
     { text: speedStr, size: 1.8, x: -39.0, y: -9.0 }
   ];
   textLines.forEach(l => {
-    const tGeo = new TextGeometry(l.text, { font: font, size: l.size, depth: 0.35, curveSegments: 1, bevelEnabled: false });
-    tGeo.translate(l.x, l.y, h);
+    const tGeo = new TextGeometry(l.text, { font: font, size: l.size, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    tGeo.translate(l.x, l.y, textZ);
     textGeos.push(tGeo.toNonIndexed());
   });
 
@@ -130,8 +134,8 @@ export function generateSwatchCard(params, font) {
     rib.translate(rx, -4.0, h + 0.2);
     addGeos.push(rib.toNonIndexed());
   });
-  const ribLbl = new TextGeometry("RIBS 0.2-0.8", { font: font, size: 1.3, depth: 0.35, curveSegments: 1, bevelEnabled: false });
-  ribLbl.translate(-12.5, -12.5, h);
+  const ribLbl = new TextGeometry("RIBS 0.2-0.8", { font: font, size: 1.3, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  ribLbl.translate(-12.5, -12.5, textZ);
   textGeos.push(ribLbl.toNonIndexed());
 
   // 4. Center-Right: Hole Shrinkage Gauge (Ø2.0, Ø3.0, Ø4.0mm)
@@ -144,8 +148,8 @@ export function generateSwatchCard(params, font) {
     hGeo.translate(hx, -4.0, h / 2);
     holeGeos.push(hGeo.toNonIndexed());
 
-    const dLbl = new TextGeometry(`⌀${d}`, { font: font, size: 1.3, depth: 0.35, curveSegments: 1, bevelEnabled: false });
-    dLbl.translate(hx - 2.2, -12.5, h);
+    const dLbl = new TextGeometry(`⌀${d}`, { font: font, size: 1.3, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    dLbl.translate(hx - 2.2, -12.5, textZ);
     textGeos.push(dLbl.toNonIndexed());
   });
 
@@ -160,8 +164,8 @@ export function generateSwatchCard(params, font) {
   });
 
   // Bottom footer title
-  const botTxt = new TextGeometry("SWATCH 85x50", { font: font, size: 1.5, depth: 0.35, curveSegments: 1, bevelEnabled: false });
-  botTxt.translate(-15.0, -21.0, h);
+  const botTxt = new TextGeometry("SWATCH 85x50", { font: font, size: 1.5, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  botTxt.translate(-15.0, -21.0, textZ);
   textGeos.push(botTxt.toNonIndexed());
 
   evaluator.useCDTClipping = true;
@@ -180,8 +184,15 @@ export function generateSwatchCard(params, font) {
     cardBrush = evaluator.evaluate(cardBrush, holeBrush, SUBTRACTION);
   }
 
-  // Step 3: Additive features (relief circles, ribs, optical steps, raised texts) merged into single mesh
-  const finalGeo = BufferGeometryUtils.mergeGeometries([cardBrush.geometry.toNonIndexed(), ...addGeos, ...textGeos], false);
+  // Step 3: Subtract all engraved text markings (100% crisp slicing in Bambu Studio)
+  if (textGeos.length > 0) {
+    const textBrush = new Brush(BufferGeometryUtils.mergeGeometries(textGeos, false));
+    textBrush.updateMatrixWorld();
+    cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
+  }
+
+  // Step 4: Additive features (relief circles, ribs, optical steps) merged into single mesh
+  const finalGeo = BufferGeometryUtils.mergeGeometries([cardBrush.geometry.toNonIndexed(), ...addGeos], false);
   finalGeo.computeVertexNormals();
 
   const swatchName = `${params.brand || 'Bambu'}_${params.material || 'PLA'}_Swatch`.replace(/\s+/g, '_');
@@ -232,6 +243,10 @@ export function generateBridgeCard(params, font) {
 
   const addGeos = [];
   const subGeos = [];
+  const textGeos = [];
+  const debossDepth = 0.45;
+  const textZ = h - debossDepth;
+  const textDepth = 0.8;
 
   spans.forEach((span, i) => {
     const y = rowY[i];
@@ -259,10 +274,10 @@ export function generateBridgeCard(params, font) {
     windowCutout.translate(centerX, y, h / 2);
     subGeos.push(windowCutout.toNonIndexed());
 
-    // Raised Span label on left pillar
-    const lbl = new TextGeometry(`${span}`, { font: font, size: 1.5, depth: 0.35, curveSegments: 1, bevelEnabled: false });
-    lbl.translate(centerX - span / 2 - pillarW / 2 - 1.0, y - 0.7, h + pillarH);
-    addGeos.push(lbl.toNonIndexed());
+    // Engraved Span label on card base to left of pillar
+    const lbl = new TextGeometry(`${span}`, { font: font, size: 1.5, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    lbl.translate(centerX - span / 2 - pillarW - 2.8, y - 0.7, textZ);
+    textGeos.push(lbl.toNonIndexed());
   });
 
   // Droop reference steps on left side (1mm, 2mm, 3mm, 4mm, 5mm)
@@ -272,18 +287,18 @@ export function generateBridgeCard(params, font) {
     step.translate(-35.0, sy, h + s / 2);
     addGeos.push(step.toNonIndexed());
 
-    const slbl = new TextGeometry(`${s}`, { font: font, size: 1.4, depth: 0.35, curveSegments: 1, bevelEnabled: false });
-    slbl.translate(-39.0, sy - 0.7, h);
-    addGeos.push(slbl.toNonIndexed());
+    const slbl = new TextGeometry(`${s}`, { font: font, size: 1.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    slbl.translate(-39.0, sy - 0.7, textZ);
+    textGeos.push(slbl.toNonIndexed());
   }
 
-  // Parameter Banner - horizontally centered at X = 0 (Raised 0.35mm)
+  // Parameter Banner - horizontally centered at X = 0 (Engraved 0.45mm)
   const banner = `SPEED: ${params.bridgeSpeed || 50}mm/s | FLOW: ${params.bridgeFlow || 0.95}`;
-  const bannerText = new TextGeometry(banner, { font: font, size: 1.8, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+  const bannerText = new TextGeometry(banner, { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   bannerText.computeBoundingBox();
   const bannerCenterX = (bannerText.boundingBox.max.x + bannerText.boundingBox.min.x) / 2;
-  bannerText.translate(-bannerCenterX, -22.2, h);
-  addGeos.push(bannerText.toNonIndexed());
+  bannerText.translate(-bannerCenterX, -22.2, textZ);
+  textGeos.push(bannerText.toNonIndexed());
 
   // Cut light inspection windows under bridges with CDT
   evaluator.useCDTClipping = true;
@@ -293,7 +308,14 @@ export function generateBridgeCard(params, font) {
     cardBrush = evaluator.evaluate(cardBrush, subBrush, SUBTRACTION);
   }
 
-  // Merge base card with all pillars, bridge rails, droop steps, and raised labels (100% manifold, 0 open edges)
+  // Subtract all engraved text markings
+  if (textGeos.length > 0) {
+    const textBrush = new Brush(BufferGeometryUtils.mergeGeometries(textGeos, false));
+    textBrush.updateMatrixWorld();
+    cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
+  }
+
+  // Merge base card with all pillars, bridge rails, and droop steps (100% manifold, 0 open edges)
   const finalGeo = BufferGeometryUtils.mergeGeometries([cardBrush.geometry.toNonIndexed(), ...addGeos], false);
   finalGeo.computeVertexNormals();
 
@@ -346,37 +368,45 @@ export function generateIroningCard(params, font) {
   const pitchY = 9.0;
 
   const textGeos = [];
-  const textH = 0.35;
+  const debossDepth = 0.45;
+  const textZ = h - debossDepth;
+  const textDepth = 0.8;
 
   // S(mm) positioned cleanly between the top-left hole (-32.25mm) and 0.10 label (-21.2mm)
-  const sLabel = new TextGeometry("S(mm)", { font: font, size: 1.45, depth: textH, curveSegments: 1, bevelEnabled: false });
-  sLabel.translate(-29.2, 17.5, h);
+  const sLabel = new TextGeometry("S(mm)", { font: font, size: 1.45, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  sLabel.translate(-29.2, 17.5, textZ);
   textGeos.push(sLabel.toNonIndexed());
 
   // Column Spacing numbers
   colSpacings.forEach((sp, c) => {
     const bx = startX + c * pitchX;
-    const lbl = new TextGeometry(`${sp}`, { font: font, size: 1.6, depth: textH, curveSegments: 1, bevelEnabled: false });
-    lbl.translate(bx - 3.2, 17.5, h);
+    const lbl = new TextGeometry(`${sp}`, { font: font, size: 1.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    lbl.translate(bx - 3.2, 17.5, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
   // F% placed on left, vertically centered between 20% (row 2) and 15% (row 1)
   const fMidY = (startY + 1 * pitchY + startY + 2 * pitchY) / 2; // -3.0mm
-  const fLabel = new TextGeometry("F%", { font: font, size: 1.9, depth: textH, curveSegments: 1, bevelEnabled: false });
-  fLabel.translate(-38.5, fMidY - 0.9, h);
+  const fLabel = new TextGeometry("F%", { font: font, size: 1.9, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  fLabel.translate(-38.5, fMidY - 0.9, textZ);
   textGeos.push(fLabel.toNonIndexed());
 
   // Row Flow numbers - moved left to -32.5mm to avoid overlap with pads (pad starts at -23.25mm)
   rowFlows.forEach((fl, r) => {
     const by = startY + r * pitchY;
-    const lbl = new TextGeometry(`${fl}%`, { font: font, size: 1.6, depth: textH, curveSegments: 1, bevelEnabled: false });
-    lbl.translate(-32.5, by - 0.8, h);
+    const lbl = new TextGeometry(`${fl}%`, { font: font, size: 1.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    lbl.translate(-32.5, by - 0.8, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // Merge crisp raised text directly onto the base plate (100% manifold, 0 open edges, 0 non-manifold edges)
-  const basePlateGeo = BufferGeometryUtils.mergeGeometries([cardBrush.geometry.toNonIndexed(), ...textGeos], false);
+  // Subtract all engraved text markings directly from Base_Plate
+  if (textGeos.length > 0) {
+    const textBrush = new Brush(BufferGeometryUtils.mergeGeometries(textGeos, false));
+    textBrush.updateMatrixWorld();
+    cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
+  }
+
+  const basePlateGeo = cardBrush.geometry;
   basePlateGeo.computeVertexNormals();
 
   const parts = [
@@ -487,11 +517,13 @@ export function generateFuzzySkinCard(params, font) {
   const pitchZ = 9.0;
 
   const frontTextGeos = [];
+  const debossDepth = 0.45;
+  const textDepth = 0.8;
 
-  // Helper to prepare raised text 0.35mm on the front vertical face (Y in [-1.55, -1.2]) for 100% manifold topology and crisp printing
+  // Helper to engrave debossed text 0.45mm into the front vertical face (Y in [-1.2, -0.75])
   const prepFrontText = (geo) => {
     geo.rotateX(Math.PI / 2);
-    geo.translate(0, -cardThick / 2 - 0.35, 0);
+    geo.translate(0, -cardThick / 2 + debossDepth, 0);
     frontTextGeos.push(geo.toNonIndexed());
   };
 
@@ -499,7 +531,7 @@ export function generateFuzzySkinCard(params, font) {
   distances.forEach((d, c) => {
     const px = startX + c * pitchX;
     const str = d.toFixed(2);
-    const lbl = new TextGeometry(str, { font: font, size: 1.8, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(str, { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const w = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
     lbl.translate(px - w / 2, 41.5, 0);
@@ -510,7 +542,7 @@ export function generateFuzzySkinCard(params, font) {
   thicknesses.forEach((th, r) => {
     const pz = startZ + r * pitchZ;
     const str = `T${th.toFixed(1)}`;
-    const lbl = new TextGeometry(str, { font: font, size: 1.8, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(str, { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const w = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
     lbl.translate(startX - 6.5 - w, pz + 2.0, 0);
@@ -518,21 +550,27 @@ export function generateFuzzySkinCard(params, font) {
   });
 
   // D(mm) indicator above row labels
-  const dLabel = new TextGeometry("D(mm)", { font: font, size: 1.7, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+  const dLabel = new TextGeometry("D(mm)", { font: font, size: 1.7, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   dLabel.computeBoundingBox();
   const dw = dLabel.boundingBox.max.x - dLabel.boundingBox.min.x;
   dLabel.translate(startX - 6.5 - dw, 41.5, 0);
   prepFrontText(dLabel);
 
   // Top title banner
-  const title = new TextGeometry("FUZZY 4x4 MATRIX", { font: font, size: 2.0, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+  const title = new TextGeometry("FUZZY 4x4 MATRIX", { font: font, size: 2.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   title.computeBoundingBox();
   const tw = title.boundingBox.max.x - title.boundingBox.min.x;
   title.translate(-tw / 2, 46.2, 0);
   prepFrontText(title);
 
-  // Merge vertical card body and raised front labels (100% watertight, 0 open edges, 0 non-manifold edges)
-  const basePlateGeo = BufferGeometryUtils.mergeGeometries([cardBrush.geometry.toNonIndexed(), ...frontTextGeos], false);
+  // Subtract all engraved front text markings (100% crisp slicing in Bambu Studio)
+  if (frontTextGeos.length > 0) {
+    const textBrush = new Brush(BufferGeometryUtils.mergeGeometries(frontTextGeos, false));
+    textBrush.updateMatrixWorld();
+    cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
+  }
+
+  const basePlateGeo = cardBrush.geometry;
   basePlateGeo.computeVertexNormals();
 
   const parts = [
@@ -608,6 +646,9 @@ export function generateToleranceCard(params, font) {
 
   const holeGeos = [];
   const textGeos = [];
+  const debossDepth = 0.45;
+  const textZ = h - debossDepth;
+  const textDepth = 0.8;
   const pins = [];
 
   diameters.forEach((dia, r) => {
@@ -641,37 +682,37 @@ export function generateToleranceCard(params, font) {
       });
     });
 
-    // Row Label with true ⌀ symbol - enlarged to 2.2mm
-    const diaLbl = new TextGeometry(`⌀${Number(dia).toFixed(1)}`, { font: font, size: 2.2, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+    // Row Label with true ⌀ symbol - enlarged to 2.2mm (Engraved 0.45mm)
+    const diaLbl = new TextGeometry(`⌀${Number(dia).toFixed(1)}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     diaLbl.computeBoundingBox();
     const lw = diaLbl.boundingBox.max.x - diaLbl.boundingBox.min.x;
-    diaLbl.translate(-16.0 - lw, y - 0.9, h);
+    diaLbl.translate(-16.0 - lw, y - 0.9, textZ);
     textGeos.push(diaLbl.toNonIndexed());
   });
 
-  // Column Clearance Labels along bottom - enlarged to 2.0mm and centered
+  // Column Clearance Labels along bottom - enlarged to 2.0mm and centered (Engraved 0.45mm)
   clearances.forEach((c, i) => {
     const x = startX + i * pitchX;
-    const lbl = new TextGeometry(`${Number(c).toFixed(2)}`, { font: font, size: 2.0, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(`${Number(c).toFixed(2)}`, { font: font, size: 2.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const cw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(x - cw / 2, -21.8, h);
+    lbl.translate(x - cw / 2, -21.8, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // GAP indicator label
-  const clrLbl = new TextGeometry("GAP", { font: font, size: 1.8, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+  // GAP indicator label (Engraved 0.45mm)
+  const clrLbl = new TextGeometry("GAP", { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   clrLbl.computeBoundingBox();
   const gw = clrLbl.boundingBox.max.x - clrLbl.boundingBox.min.x;
-  clrLbl.translate(-16.0 - gw, -21.8, h);
+  clrLbl.translate(-16.0 - gw, -21.8, textZ);
   textGeos.push(clrLbl.toNonIndexed());
 
-  // Title "TOLERANCE" rotated 90 degrees vertically along the far left edge
-  const title = new TextGeometry("TOLERANCE", { font: font, size: 2.8, depth: 0.35, curveSegments: 1, bevelEnabled: false });
+  // Title "TOLERANCE" rotated 90 degrees vertically along the far left edge (Engraved 0.45mm)
+  const title = new TextGeometry("TOLERANCE", { font: font, size: 2.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   title.rotateZ(Math.PI / 2);
   title.computeBoundingBox();
   const titleH = title.boundingBox.max.y - title.boundingBox.min.y;
-  title.translate(-38.8, -titleH / 2 - 4.0, h);
+  title.translate(-38.8, -titleH / 2 - 4.0, textZ);
   textGeos.push(title.toNonIndexed());
 
   // Cut pin sockets with CDT clipping
@@ -680,8 +721,14 @@ export function generateToleranceCard(params, font) {
   const holesBrush = new Brush(mergedHolesGeo); holesBrush.updateMatrixWorld();
   cardBrush = evaluator.evaluate(cardBrush, holesBrush, SUBTRACTION);
 
-  // Merge raised text directly with the perforated base plate (0 open edges, 0 non-manifold edges)
-  const basePlateGeo = BufferGeometryUtils.mergeGeometries([cardBrush.geometry.toNonIndexed(), ...textGeos], false);
+  // Subtract all engraved text markings directly from base plate
+  if (textGeos.length > 0) {
+    const textBrush = new Brush(BufferGeometryUtils.mergeGeometries(textGeos, false));
+    textBrush.updateMatrixWorld();
+    cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
+  }
+
+  const basePlateGeo = cardBrush.geometry;
   basePlateGeo.computeVertexNormals();
   const parts = [
     {
