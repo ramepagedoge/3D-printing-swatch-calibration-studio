@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-import { Brush, Evaluator, SUBTRACTION, ADDITION } from 'three-bvh-csg';
+import { Brush, Evaluator, SUBTRACTION } from 'three-bvh-csg';
 import { healMesh } from './meshHealer.js';
 
 let cachedFont = null;
@@ -15,6 +15,17 @@ export async function loadDefaultFont() {
   cachedFont = loader.parse(json);
   return cachedFont;
 }
+
+/**
+ * Global card scale factor: 1.5 (150% model scale: 127.5 x 75.0 mm).
+ * Card thickness and test hole diameters remain strictly constant.
+ */
+export const CARD_SCALE = 1.5;
+export const BASE_CARD_W = 85.0 * CARD_SCALE; // 127.5 mm
+export const BASE_CARD_D = 50.0 * CARD_SCALE; // 75.0 mm
+export const BASE_CARD_R = 3.0 * CARD_SCALE;  // 4.5 mm
+export const HANGING_HOLE_POS = { x: -34.5 * CARD_SCALE, y: 16.0 * CARD_SCALE }; // (-51.75, 24.0)
+export const HANGING_HOLE_R = 2.25; // Ø4.5mm hole radius (UNCHANGED)
 
 /**
  * Safely merges multiple geometries by normalizing attributes to position-only to avoid attribute mismatch
@@ -33,9 +44,9 @@ export function safeMergeGeometries(geos) {
 }
 
 /**
- * Creates standard 85.0 x 50.0 mm rounded rectangle card shape
+ * Creates standard 127.5 x 75.0 mm rounded rectangle card shape
  */
-export function createStandardCardShape(w = 85.0, d = 50.0, r = 3.0, includeHole = false, holePos = { x: -34.5, y: 16.0 }, holeR = 2.25) {
+export function createStandardCardShape(w = BASE_CARD_W, d = BASE_CARD_D, r = BASE_CARD_R, includeHole = false, holePos = HANGING_HOLE_POS, holeR = HANGING_HOLE_R) {
   const shape = new THREE.Shape();
   const x = -w / 2;
   const y = -d / 2;
@@ -62,8 +73,8 @@ export function createStandardCardShape(w = 85.0, d = 50.0, r = 3.0, includeHole
  * Creates the standard base card brush with optional Ø4.5mm hanging hole.
  * Uses CSG cylinder subtraction for hanging hole to avoid ear-clipping sliver triangles.
  */
-export function createBaseCardBrush(h = 2.4, includeHole = true, holePos = { x: -34.5, y: 16.0 }, holeR = 2.25) {
-  const shape = createStandardCardShape(85.0, 50.0, 3.0, false);
+export function createBaseCardBrush(h = 2.4, includeHole = true, holePos = HANGING_HOLE_POS, holeR = HANGING_HOLE_R) {
+  const shape = createStandardCardShape(BASE_CARD_W, BASE_CARD_D, BASE_CARD_R, false);
   const baseExtrude = new THREE.ExtrudeGeometry(shape, {
     depth: h,
     bevelEnabled: false,
@@ -89,10 +100,12 @@ export function createBaseCardBrush(h = 2.4, includeHole = true, holePos = { x: 
 }
 
 /**
- * 1. Pro Swatch Card with Rich Online-inspired Features
+ * 1. Pro Swatch Card with Rich Online-inspired Features (Scaled to 150%: 127.5 x 75.0 mm)
  * 5-step translucency with relief icons, line width ribs, hole gauge, optical steps, specs badge
+ * Card thickness (2.4mm) and test hole diameters (Ø4.5mm hanging, Ø2/3/4mm gauge) remain 100% constant.
  */
 export function generateSwatchCard(params, font) {
+  const S = CARD_SCALE;
   const h = 2.4;
   let cardBrush = createBaseCardBrush(h, params.includeHole !== false);
 
@@ -109,11 +122,11 @@ export function generateSwatchCard(params, font) {
 
   // 1. Top Row: 5 Translucent Stepped Windows (0.2, 0.4, 0.6, 0.8, 1.0mm)
   const steps = params.translucentSteps || [0.2, 0.4, 0.6, 0.8, 1.0];
-  const winW = 8.5;
-  const winD = 12.0;
-  const startX = -13.5;
-  const spacingX = 10.8;
-  const winY = 15.5;
+  const winW = 8.5 * S;
+  const winD = 12.0 * S;
+  const startX = -13.5 * S;
+  const spacingX = 10.8 * S;
+  const winY = 15.5 * S;
 
   const debossDepth = 0.45;
   const textZ = h - debossDepth;
@@ -126,34 +139,35 @@ export function generateSwatchCard(params, font) {
     winGeos.push(winGeo.toNonIndexed());
 
     // Relief circle inside window to test lithophane/backlight contrast
-    const reliefR = 2.2;
+    const reliefR = 2.2 * S;
     const reliefH = 0.2;
     const relGeo = new THREE.CylinderGeometry(reliefR, reliefR, reliefH, 16);
     relGeo.rotateX(Math.PI / 2);
     relGeo.translate(startX + i * spacingX, winY, t + reliefH / 2);
     addGeos.push(relGeo.toNonIndexed());
 
-    // Engraved thickness label underneath window (0.45mm debossed, enlarged to 2.2mm)
+    // Engraved thickness label underneath window (0.45mm debossed)
     const lbl = new TextGeometry(`${Number(t).toFixed(1)}`, {
-      font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false
+      font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false
     });
     lbl.computeBoundingBox();
     const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(startX + i * spacingX - lw / 2, winY - 8.6, textZ);
+    lbl.translate(startX + i * spacingX - lw / 2, winY - 8.6 * S, textZ);
     winLabelGeos.push(lbl.toNonIndexed());
   });
 
-  // 2. Left Column: Specs Badge (Engraved 0.45mm, maximized font sizes)
+  // 2. Left Column: Specs Badge (Engraved 0.45mm, positioned cleanly inside card boundary)
   const brand = (params.brand || 'BAMBU LAB').toUpperCase();
   const material = (params.material || 'PLA BASIC').toUpperCase();
   const tempStr = `${params.nozzleTemp || 220}C / ${params.bedTemp || 55}C`;
   const speedStr = `${params.bridgeSpeed || 50}mm/s | ${params.flowRatio || 0.98}`;
+  const badgeX = -35.0 * S;
 
   const textLines = [
-    { text: brand, size: 3.2, x: -39.0, y: 5.0 },
-    { text: material, size: 2.8, x: -39.0, y: 0.8 },
-    { text: tempStr, size: 2.2, x: -39.0, y: -4.0 },
-    { text: speedStr, size: 2.2, x: -39.0, y: -8.5 }
+    { text: brand, size: 3.2 * S, x: badgeX, y: 5.0 * S },
+    { text: material, size: 2.8 * S, x: badgeX, y: 0.8 * S },
+    { text: tempStr, size: 2.2 * S, x: badgeX, y: -4.0 * S },
+    { text: speedStr, size: 2.2 * S, x: badgeX, y: -8.5 * S }
   ];
   textLines.forEach(l => {
     const tGeo = new TextGeometry(l.text, { font: font, size: l.size, depth: textDepth, curveSegments: 1, bevelEnabled: false });
@@ -162,52 +176,52 @@ export function generateSwatchCard(params, font) {
   });
 
   // 3. Center: Line Width & Slot Resolution Gauge
-  const ribX = -12.0;
-  const ribWidths = [0.25, 0.45, 0.65, 0.85];
+  const ribX = -12.0 * S;
+  const ribWidths = [0.25 * S, 0.45 * S, 0.65 * S, 0.85 * S];
   ribWidths.forEach((rw, idx) => {
-    const rx = ribX + idx * 3.5;
-    const rib = new THREE.BoxGeometry(rw, 12.0, 0.4);
-    rib.translate(rx, -4.0, h + 0.2);
+    const rx = ribX + idx * 3.5 * S;
+    const rib = new THREE.BoxGeometry(rw, 12.0 * S, 0.4);
+    rib.translate(rx, -4.0 * S, h + 0.2);
     addGeos.push(rib.toNonIndexed());
   });
-  const ribLbl = new TextGeometry("RIBS 0.2-0.8", { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const ribLbl = new TextGeometry("RIBS 0.2-0.8", { font: font, size: 1.8 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   ribLbl.computeBoundingBox();
   const rw = ribLbl.boundingBox.max.x - ribLbl.boundingBox.min.x;
-  ribLbl.translate(-6.5 - rw / 2, -13.0, textZ);
+  ribLbl.translate(-6.5 * S - rw / 2, -13.0 * S, textZ);
   gaugeGeos.push(ribLbl.toNonIndexed());
 
-  // 4. Center-Right: Hole Shrinkage Gauge (Ø2.0, Ø3.0, Ø4.0mm)
+  // 4. Center-Right: Hole Shrinkage Gauge (Ø2.0, Ø3.0, Ø4.0mm) - Hole sizes strictly preserved!
   const holes = [2.0, 3.0, 4.0];
-  const holeX = 6.0;
+  const holeX = 6.0 * S;
   holes.forEach((d, idx) => {
-    const hx = holeX + idx * 7.0;
+    const hx = holeX + idx * 7.0 * S;
     const hGeo = new THREE.CylinderGeometry(d / 2, d / 2, h * 2, 24);
     hGeo.rotateX(Math.PI / 2);
-    hGeo.translate(hx, -4.0, h / 2);
+    hGeo.translate(hx, -4.0 * S, h / 2);
     holeGeos.push(hGeo.toNonIndexed());
 
-    const dLbl = new TextGeometry(`D${d}`, { font: font, size: 1.9, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const dLbl = new TextGeometry(`D${d}`, { font: font, size: 1.9 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     dLbl.computeBoundingBox();
     const dw = dLbl.boundingBox.max.x - dLbl.boundingBox.min.x;
-    dLbl.translate(hx - dw / 2, -13.0, textZ);
+    dLbl.translate(hx - dw / 2, -13.0 * S, textZ);
     gaugeGeos.push(dLbl.toNonIndexed());
   });
 
   // 5. Right: Optical Specular Steps
   const stepLevels = [0.4, 0.8, 1.2, 1.6];
-  const stepStartX = 28.5;
+  const stepStartX = 28.5 * S;
   stepLevels.forEach((lvl, idx) => {
-    const sx = stepStartX + idx * 3.0;
-    const sGeo = new THREE.BoxGeometry(2.8, 14.0, lvl);
-    sGeo.translate(sx, -4.0, h + lvl / 2);
+    const sx = stepStartX + idx * 3.0 * S;
+    const sGeo = new THREE.BoxGeometry(2.8 * S, 14.0 * S, lvl);
+    sGeo.translate(sx, -4.0 * S, h + lvl / 2);
     addGeos.push(sGeo.toNonIndexed());
   });
 
-  // Bottom footer title - enlarged to 2.5mm and horizontally centered
-  const botTxt = new TextGeometry("SWATCH 85x50", { font: font, size: 2.5, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // Bottom footer title - updated to SWATCH 128x75 reflecting 150% standard dimensions
+  const botTxt = new TextGeometry("SWATCH 128x75", { font: font, size: 2.5 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   botTxt.computeBoundingBox();
   const bw = botTxt.boundingBox.max.x - botTxt.boundingBox.min.x;
-  botTxt.translate(-bw / 2, -21.5, textZ);
+  botTxt.translate(-bw / 2, -21.0 * S, textZ);
   gaugeGeos.push(botTxt.toNonIndexed());
 
   evaluator.useCDTClipping = true;
@@ -226,7 +240,7 @@ export function generateSwatchCard(params, font) {
     cardBrush = evaluator.evaluate(cardBrush, holeBrush, SUBTRACTION);
   }
 
-  // Step 3: Subtract engraved text markings in 3 focused passes for numerical stability
+  // Step 3: Subtract engraved text markings in focused passes for numerical stability
   if (badgeGeos.length > 0) {
     const badgeBrush = new Brush(BufferGeometryUtils.mergeGeometries(badgeGeos, false));
     badgeBrush.updateMatrixWorld();
@@ -245,7 +259,7 @@ export function generateSwatchCard(params, font) {
 
   // Step 4: Additive features (relief circles, ribs, optical steps) merged into single mesh
   let finalGeo = safeMergeGeometries([cardBrush.geometry, ...addGeos]);
-  finalGeo = healMesh(finalGeo);
+  finalGeo = healMesh(finalGeo, 1e-4);
 
   const swatchName = `${params.brand || 'Bambu'}_${params.material || 'PLA'}_Swatch`.replace(/\s+/g, '_');
   finalGeo.userData = {
@@ -263,10 +277,11 @@ export function generateSwatchCard(params, font) {
 }
 
 /**
- * 2. Bridge Calibration Card with Dual-track (Narrow/Wide), Through-windows & Droop Steps
- * FIXED: Adjacent rows separated by 2.5mm air gap, never connecting or fusing!
+ * 2. Bridge Calibration Card with Dual-track (Narrow/Wide), Through-windows & Droop Steps (Scaled to 150%: 127.5 x 75.0 mm)
+ * Spans scaled proportionally (15 to 75mm); Droop measurement step heights (1 to 5mm) and card thickness remain constant.
  */
 export function generateBridgeCard(params, font) {
+  const S = CARD_SCALE;
   const h = 2.4;
   let cardBrush = createBaseCardBrush(h, params.includeHole !== false);
 
@@ -274,25 +289,24 @@ export function generateBridgeCard(params, font) {
   evaluator.useGroups = false;
   evaluator.useCDTClipping = true;
 
-  const minSpan = params.bridgeMinSpan || 10;
-  const maxSpan = params.bridgeMaxSpan || 50;
+  const minSpan = (params.bridgeMinSpan || 10) * S;
+  const maxSpan = (params.bridgeMaxSpan || 50) * S;
   const spans = [
-    minSpan,
+    Math.round(minSpan),
     Math.round(minSpan + (maxSpan - minSpan) * 0.25),
     Math.round(minSpan + (maxSpan - minSpan) * 0.50),
     Math.round(minSpan + (maxSpan - minSpan) * 0.75),
-    maxSpan
+    Math.round(maxSpan)
   ];
 
-  // Center-to-center pitch = 8.5mm
-  const rowY = [-17.0, -8.5, 0.0, 8.5, 17.0];
-  const centerX = 3.0;
-  const pillarH = params.bridgePillarHeight || 7.0;
-  const pillarW = 3.5;
-  const wNarrow = 1.6;
-  const wGap = 1.2;
-  const wWide = 3.2;
-  const stationD = wNarrow + wGap + wWide; // 6.0mm! (Leaving 2.5mm air gap between adjacent pillars!)
+  const rowY = [-17.0 * S, -8.5 * S, 0.0, 8.5 * S, 17.0 * S];
+  const centerX = 3.0 * S;
+  const pillarH = params.bridgePillarHeight || 7.0; // Height unchanged
+  const pillarW = 3.5 * S;
+  const wNarrow = 1.6 * S;
+  const wGap = 1.2 * S;
+  const wWide = 3.2 * S;
+  const stationD = wNarrow + wGap + wWide;
 
   const addGeos = [];
   const subGeos = [];
@@ -323,38 +337,38 @@ export function generateBridgeCard(params, font) {
     addGeos.push(bWide.toNonIndexed());
 
     // Through-plate light inspection cutout under bridge
-    const windowCutout = new THREE.BoxGeometry(span - 2.0, stationD - 0.8, h * 2);
+    const windowCutout = new THREE.BoxGeometry(span - 2.0 * S, stationD - 0.8 * S, h * 2);
     windowCutout.translate(centerX, y, h / 2);
     subGeos.push(windowCutout.toNonIndexed());
 
-    // Engraved Span label on card base to left of pillar - enlarged to 2.2mm
-    const lbl = new TextGeometry(`${span}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    // Engraved Span label on card base to left of pillar
+    const lbl = new TextGeometry(`${span}`, { font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(centerX - span / 2 - pillarW - lw - 1.2, y - 0.9, textZ);
+    lbl.translate(centerX - span / 2 - pillarW - lw - 1.2 * S, y - 0.9 * S, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // Droop reference steps on left side (1mm, 2mm, 3mm, 4mm, 5mm) - enlarged to 2.2mm
+  // Droop reference steps on left side (1mm, 2mm, 3mm, 4mm, 5mm) - Heights strictly preserved!
   for (let s = 1; s <= 5; s++) {
-    const sy = -16.0 + (s - 1) * 6.5;
-    const step = new THREE.BoxGeometry(3.0, 4.0, s);
-    step.translate(-35.0, sy, h + s / 2);
+    const sy = -16.0 * S + (s - 1) * 6.5 * S;
+    const step = new THREE.BoxGeometry(3.0 * S, 4.0 * S, s);
+    step.translate(-35.0 * S, sy, h + s / 2);
     addGeos.push(step.toNonIndexed());
 
-    const slbl = new TextGeometry(`${s}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const slbl = new TextGeometry(`${s}`, { font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     slbl.computeBoundingBox();
     const sw = slbl.boundingBox.max.x - slbl.boundingBox.min.x;
-    slbl.translate(-39.5, sy - 0.9, textZ);
+    slbl.translate(-39.5 * S, sy - 0.9 * S, textZ);
     textGeos.push(slbl.toNonIndexed());
   }
 
-  // Parameter Banner - horizontally centered at X = 0 (Engraved 0.45mm, enlarged to 2.4mm)
+  // Parameter Banner
   const banner = `SPEED: ${params.bridgeSpeed || 50}mm/s | FLOW: ${params.bridgeFlow || 0.95}`;
-  const bannerText = new TextGeometry(banner, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const bannerText = new TextGeometry(banner, { font: font, size: 2.4 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   bannerText.computeBoundingBox();
   const bannerCenterX = (bannerText.boundingBox.max.x + bannerText.boundingBox.min.x) / 2;
-  bannerText.translate(-bannerCenterX, -22.2, textZ);
+  bannerText.translate(-bannerCenterX, -21.0 * S, textZ);
   textGeos.push(bannerText.toNonIndexed());
 
   // Cut light inspection windows under bridges with CDT
@@ -372,9 +386,9 @@ export function generateBridgeCard(params, font) {
     cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
   }
 
-  // Merge base card with all pillars, bridge rails, and droop steps (100% manifold, 0 open edges)
+  // Merge base card with all pillars, bridge rails, and droop steps
   let finalGeo = safeMergeGeometries([cardBrush.geometry, ...addGeos]);
-  finalGeo = healMesh(finalGeo);
+  finalGeo = healMesh(finalGeo, 1e-4);
 
   finalGeo.userData = {
     presetId: 'bridge',
@@ -391,9 +405,11 @@ export function generateBridgeCard(params, font) {
 }
 
 /**
- * 3. Ironing Calibration Card: Shifted Left, Zero Boundary Spill, F% Centered on Left, S(mm) to the Left of 0.1
+ * 3. Ironing Calibration Card: 4x5 Parameter Matrix (Scaled to 150%: 127.5 x 75.0 mm)
+ * 20 independent test pads (15.75 x 11.25 mm) with 0.8mm constant test thickness.
  */
 export function generateIroningCard(params, font) {
+  const S = CARD_SCALE;
   const h = 2.4;
   let cardBrush = createBaseCardBrush(h, params.includeHole !== false);
 
@@ -415,53 +431,52 @@ export function generateIroningCard(params, font) {
     rowFlows.push(Math.round(minFlow + (maxFlow - minFlow) * (r / 3)));
   }
 
-  // Large blocks safely inside card boundaries (-42.5 to +42.5mm)
-  const blockW = 10.5;
-  const blockD = 7.5;
+  // Test pad dimensions: scaled in X/Y (15.75 x 11.25 mm), thickness 0.8mm unchanged
+  const blockW = 10.5 * S;
+  const blockD = 7.5 * S;
   const blockH = 0.8;
 
-  const startX = -18.0;
-  const pitchX = 12.0;
-  const startY = -16.5;
-  const pitchY = 9.0;
+  const startX = -18.0 * S;
+  const pitchX = 12.0 * S;
+  const startY = -16.5 * S;
+  const pitchY = 9.0 * S;
 
   const textGeos = [];
   const debossDepth = 0.45;
   const textZ = h - debossDepth;
   const textDepth = 0.8;
 
-  // S(mm) positioned cleanly between top-left hole and 0.10 label - enlarged to 1.85mm
-  const sLabel = new TextGeometry("S(mm)", { font: font, size: 1.85, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // S(mm) header label
+  const sLabel = new TextGeometry("S(mm)", { font: font, size: 1.85 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   sLabel.computeBoundingBox();
   const sw = sLabel.boundingBox.max.x - sLabel.boundingBox.min.x;
-  sLabel.translate(-27.5 - sw / 2, 17.5, textZ);
+  sLabel.translate(-27.5 * S - sw / 2, 17.5 * S, textZ);
   textGeos.push(sLabel.toNonIndexed());
 
-  // Column Spacing numbers - enlarged to 2.2mm and centered above columns
+  // Column Spacing numbers
   colSpacings.forEach((sp, c) => {
     const bx = startX + c * pitchX;
-    const lbl = new TextGeometry(`${sp}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(`${sp}`, { font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(bx - lw / 2, 17.5, textZ);
+    lbl.translate(bx - lw / 2, 17.5 * S, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // F% placed on left, vertically centered between 20% (row 2) and 15% (row 1) - enlarged to 2.6mm
-  const fMidY = (startY + 1 * pitchY + startY + 2 * pitchY) / 2; // -3.0mm
-  const fLabel = new TextGeometry("F%", { font: font, size: 2.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // F% header label
+  const fMidY = (startY + 1 * pitchY + startY + 2 * pitchY) / 2;
+  const fLabel = new TextGeometry("F%", { font: font, size: 2.6 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   fLabel.computeBoundingBox();
-  const fw = fLabel.boundingBox.max.x - fLabel.boundingBox.min.x;
-  fLabel.translate(-38.8, fMidY - 1.2, textZ);
+  fLabel.translate(-38.8 * S, fMidY - 1.2 * S, textZ);
   textGeos.push(fLabel.toNonIndexed());
 
-  // Row Flow numbers - enlarged to 2.2mm and cleanly aligned to left of pads (pad starts at -23.25mm)
+  // Row Flow numbers
   rowFlows.forEach((fl, r) => {
     const by = startY + r * pitchY;
-    const lbl = new TextGeometry(`${fl}%`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(`${fl}%`, { font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(-25.2 - lw, by - 0.9, textZ);
+    lbl.translate(-25.2 * S - lw, by - 0.9 * S, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
@@ -472,7 +487,7 @@ export function generateIroningCard(params, font) {
     cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
   }
 
-  const basePlateGeo = healMesh(cardBrush.geometry);
+  const basePlateGeo = healMesh(cardBrush.geometry, 1e-4);
   basePlateGeo.computeVertexNormals();
 
   const parts = [
@@ -521,21 +536,22 @@ export function generateIroningCard(params, font) {
 }
 
 /**
- * 4. Standalone Vertical 4x4 Fuzzy Skin Matrix Card
- * Standalone vertical card (no support feet), 4 rows (Thickness) x 4 columns (Distance) = 16 patches
- * All debossed text correctly cut into the front face (Y in [-1.2, -0.8]).
+ * 4. Standalone Vertical 4x4 Fuzzy Skin Matrix Card (Scaled to 150%: 127.5 x 75.0 mm)
+ * Standalone vertical card, 4 rows (Thickness) x 4 columns (Distance) = 16 patches
+ * All debossed text correctly cut into the front face. Thickness (2.4mm) and hole diameter remain constant.
  */
 export function generateFuzzySkinCard(params, font) {
-  const cardW = 85.0;
-  const cardH = 50.0;
+  const S = CARD_SCALE;
+  const cardW = 85.0 * S;
+  const cardH = 50.0 * S;
   const cardThick = 2.4;
   const evaluator = new Evaluator();
   evaluator.useGroups = false;
   evaluator.useCDTClipping = true;
 
-  // Main vertical card body: X in [-42.5, 42.5], Y in [-1.2, 1.2], Z in [0, 50]
+  // Main vertical card body
   const cardShape = new THREE.Shape();
-  const r = 3.0;
+  const r = 3.0 * S;
   const x0 = -cardW / 2, z0 = 0;
   cardShape.moveTo(x0 + r, z0);
   cardShape.lineTo(x0 + cardW - r, z0);
@@ -552,11 +568,11 @@ export function generateFuzzySkinCard(params, font) {
   extrudeGeo.rotateX(Math.PI / 2);
   let cardBrush = new Brush(extrudeGeo); cardBrush.updateMatrixWorld();
 
-  // Hanging hole Ø4.5mm (subtracted via CSG cylinder to prevent ear-clipping sliver triangles)
+  // Hanging hole Ø4.5mm (hole diameter unchanged)
   if (params.includeHole !== false) {
-    const holeGeo = new THREE.CylinderGeometry(2.25, 2.25, cardThick * 2, 32);
+    const holeGeo = new THREE.CylinderGeometry(HANGING_HOLE_R, HANGING_HOLE_R, cardThick * 2, 32);
     holeGeo.rotateX(Math.PI / 2);
-    holeGeo.translate(-34.5, 0, 40.0);
+    holeGeo.translate(-34.5 * S, 0, 40.0 * S);
     const holeBrush = new Brush(holeGeo);
     holeBrush.updateMatrixWorld();
     cardBrush = evaluator.evaluate(cardBrush, holeBrush, SUBTRACTION);
@@ -577,69 +593,68 @@ export function generateFuzzySkinCard(params, font) {
     distances.push(Number((minDistance + (maxDistance - minDistance) * (c / 3)).toFixed(2)));
   }
 
-  const patchW = 11.5;
-  const patchH = 7.2;
+  const patchW = 11.5 * S;
+  const patchH = 7.2 * S;
   const patchExtrude = 1.0;
-  const startX = -16.0;
-  const pitchX = 13.5;
-  const startZ = 4.0;
-  const pitchZ = 9.0;
+  const startX = -16.0 * S;
+  const pitchX = 13.5 * S;
+  const startZ = 4.0 * S;
+  const pitchZ = 9.0 * S;
 
   const frontTextGeos = [];
   const debossDepth = 0.45;
   const textDepth = 0.8;
 
-  // Helper to engrave debossed text 0.45mm into the front vertical face (Y in [-1.2, -0.75])
   const prepFrontText = (geo) => {
     geo.rotateX(Math.PI / 2);
     geo.translate(0, -cardThick / 2 + debossDepth, 0);
     frontTextGeos.push(geo.toNonIndexed());
   };
 
-  // Column labels on card front face (centered above each column) - enlarged to 2.4mm
+  // Column labels on card front face
   distances.forEach((d, c) => {
     const px = startX + c * pitchX;
     const str = d.toFixed(2);
-    const lbl = new TextGeometry(str, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(str, { font: font, size: 2.4 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const w = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(px - w / 2, 41.5, 0);
+    lbl.translate(px - w / 2, 41.5 * S, 0);
     prepFrontText(lbl);
   });
 
-  // Row labels on card front face (aligned to left of rows) - enlarged to 2.4mm
+  // Row labels on card front face
   thicknesses.forEach((th, r) => {
     const pz = startZ + r * pitchZ;
     const str = `T${th.toFixed(1)}`;
-    const lbl = new TextGeometry(str, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(str, { font: font, size: 2.4 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const w = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(startX - 6.5 - w, pz + 2.0, 0);
+    lbl.translate(startX - 6.5 * S - w, pz + 2.0 * S, 0);
     prepFrontText(lbl);
   });
 
-  // D(mm) indicator above row labels - enlarged to 2.2mm
-  const dLabel = new TextGeometry("D(mm)", { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // D(mm) indicator
+  const dLabel = new TextGeometry("D(mm)", { font: font, size: 2.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   dLabel.computeBoundingBox();
   const dw = dLabel.boundingBox.max.x - dLabel.boundingBox.min.x;
-  dLabel.translate(startX - 6.5 - dw, 41.5, 0);
+  dLabel.translate(startX - 6.5 * S - dw, 41.5 * S, 0);
   prepFrontText(dLabel);
 
-  // Top title banner - enlarged to 2.8mm and centered
-  const title = new TextGeometry("FUZZY 4x4 MATRIX", { font: font, size: 2.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // Top title banner
+  const title = new TextGeometry("FUZZY 4x4 MATRIX", { font: font, size: 2.8 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   title.computeBoundingBox();
   const tw = title.boundingBox.max.x - title.boundingBox.min.x;
-  title.translate(-tw / 2, 46.0, 0);
+  title.translate(-tw / 2, 46.0 * S, 0);
   prepFrontText(title);
 
-  // Subtract all engraved front text markings (100% crisp slicing in Bambu Studio)
+  // Subtract all engraved front text markings
   if (frontTextGeos.length > 0) {
     const textBrush = new Brush(BufferGeometryUtils.mergeGeometries(frontTextGeos, false));
     textBrush.updateMatrixWorld();
     cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
   }
 
-  const basePlateGeo = healMesh(cardBrush.geometry);
+  const basePlateGeo = healMesh(cardBrush.geometry, 1e-4);
   basePlateGeo.computeVertexNormals();
 
   const parts = [
@@ -687,11 +702,11 @@ export function generateFuzzySkinCard(params, font) {
 }
 
 /**
- * 5. Tolerance Clearance Matrix Gauge: 4 Rows of Diameters x 5 Columns of Clearances
- * TOLERANCE title rotated 90 degrees vertically along left edge to free space.
- * Max font size: 2.2mm for true ⌀ row labels, 2.0mm for clearances.
+ * 5. Tolerance Clearance Matrix Gauge: 4 Rows of Diameters x 5 Columns of Clearances (Scaled to 150%: 127.5 x 75.0 mm)
+ * Card thickness (4.8mm), pin/hole diameters (3.0, 4.5, 6.0, 7.5mm) and clearances (0.10 to 0.30mm) remain 100% constant.
  */
 export function generateToleranceCard(params, font) {
+  const S = CARD_SCALE;
   const h = 4.8;
   let cardBrush = createBaseCardBrush(h, params.includeHole !== false);
 
@@ -707,9 +722,9 @@ export function generateToleranceCard(params, font) {
     params.toleranceDia4 || 7.5
   ];
 
-  const startX = -10.5;
-  const pitchX = 11.5;
-  const rowY = [-14.0, -4.5, 5.0, 14.5]; // 4 rows
+  const startX = -10.5 * S;
+  const pitchX = 11.5 * S;
+  const rowY = [-14.0 * S, -4.5 * S, 5.0 * S, 14.5 * S]; // 4 rows
   const floorH = 1.2;
   const grooveDepth = h - floorH; // 3.6mm
 
@@ -728,7 +743,7 @@ export function generateToleranceCard(params, font) {
       const x = startX + i * pitchX;
       const outerR = pinR + c;
 
-      // 1. Hole cutout in base plate (batched)
+      // 1. Hole cutout in base plate (hole diameter strictly preserved!)
       const cylHole = new THREE.CylinderGeometry(outerR, outerR, grooveDepth + 0.2, 32);
       cylHole.rotateX(Math.PI / 2);
       cylHole.translate(x, y, floorH + (grooveDepth + 0.2) / 2);
@@ -751,37 +766,37 @@ export function generateToleranceCard(params, font) {
       });
     });
 
-    // Row Label with D (Diameter) symbol - enlarged to 2.8mm (Engraved 0.45mm)
-    const diaLbl = new TextGeometry(`D${Number(dia).toFixed(1)}`, { font: font, size: 2.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    // Row Label with D (Diameter) symbol
+    const diaLbl = new TextGeometry(`D${Number(dia).toFixed(1)}`, { font: font, size: 2.8 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     diaLbl.computeBoundingBox();
     const lw = diaLbl.boundingBox.max.x - diaLbl.boundingBox.min.x;
-    diaLbl.translate(-16.0 - lw, y - 1.1, textZ);
+    diaLbl.translate(-16.0 * S - lw, y - 1.1 * S, textZ);
     textGeos.push(diaLbl.toNonIndexed());
   });
 
-  // Column Clearance Labels along bottom - enlarged to 2.6mm and centered (Engraved 0.45mm)
+  // Column Clearance Labels along bottom
   clearances.forEach((c, i) => {
     const x = startX + i * pitchX;
-    const lbl = new TextGeometry(`${Number(c).toFixed(2)}`, { font: font, size: 2.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(`${Number(c).toFixed(2)}`, { font: font, size: 2.6 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const cw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
-    lbl.translate(x - cw / 2, -21.8, textZ);
+    lbl.translate(x - cw / 2, -21.0 * S, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // GAP indicator label - enlarged to 2.4mm (Engraved 0.45mm)
-  const clrLbl = new TextGeometry("GAP", { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // GAP indicator label
+  const clrLbl = new TextGeometry("GAP", { font: font, size: 2.4 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   clrLbl.computeBoundingBox();
   const gw = clrLbl.boundingBox.max.x - clrLbl.boundingBox.min.x;
-  clrLbl.translate(-16.0 - gw, -21.8, textZ);
+  clrLbl.translate(-16.0 * S - gw, -21.0 * S, textZ);
   textGeos.push(clrLbl.toNonIndexed());
 
-  // Title "TOLERANCE" rotated 90 degrees vertically along the far left edge - enlarged to 3.6mm (Engraved 0.45mm)
-  const title = new TextGeometry("TOLERANCE", { font: font, size: 3.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // Title "TOLERANCE" rotated 90 degrees vertically along the far left edge
+  const title = new TextGeometry("TOLERANCE", { font: font, size: 3.6 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   title.rotateZ(Math.PI / 2);
   title.computeBoundingBox();
   const titleH = title.boundingBox.max.y - title.boundingBox.min.y;
-  title.translate(-38.8, -titleH / 2 - 4.0, textZ);
+  title.translate(-38.8 * S, -titleH / 2 - 4.0 * S, textZ);
   textGeos.push(title.toNonIndexed());
 
   // Cut pin sockets with CDT clipping
@@ -797,7 +812,7 @@ export function generateToleranceCard(params, font) {
     cardBrush = evaluator.evaluate(cardBrush, textBrush, SUBTRACTION);
   }
 
-  const basePlateGeo = healMesh(cardBrush.geometry);
+  const basePlateGeo = healMesh(cardBrush.geometry, 1e-4);
   basePlateGeo.computeVertexNormals();
   const parts = [
     {

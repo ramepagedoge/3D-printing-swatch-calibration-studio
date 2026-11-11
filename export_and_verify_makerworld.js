@@ -78,32 +78,32 @@ async function generateAndVerifyMakerWorldDefaults() {
   const items = [
     {
       id: 'swatch',
-      filename: '01_Bambu_Swatch_Card_85x50.3mf',
-      nameZh: '多階透光色票卡',
+      filename: '01_Bambu_Swatch_Card_128x75.3mf',
+      nameZh: '多階透光色票卡 (150% 128x75mm)',
       fn: generateSwatchCard
     },
     {
       id: 'bridge',
-      filename: '02_Bambu_Bridge_Test_Card_85x50.3mf',
-      nameZh: '雙軌懸空橋接測試卡',
+      filename: '02_Bambu_Bridge_Test_Card_128x75.3mf',
+      nameZh: '雙軌懸空橋接測試卡 (150% 128x75mm)',
       fn: generateBridgeCard
     },
     {
       id: 'ironing',
-      filename: '03_Bambu_Ironing_Matrix_Card_85x50.3mf',
-      nameZh: '表面熨燙參數矩陣卡 (4x5)',
+      filename: '03_Bambu_Ironing_Matrix_Card_128x75.3mf',
+      nameZh: '表面熨燙參數矩陣卡 (150% 128x75mm)',
       fn: generateIroningCard
     },
     {
       id: 'fuzzy',
-      filename: '04_Bambu_Fuzzy_Skin_Matrix_Card_85x50.3mf',
-      nameZh: '垂直 Fuzzy Skin 矩陣卡 (4x4)',
+      filename: '04_Bambu_Fuzzy_Skin_Matrix_Card_128x75.3mf',
+      nameZh: '垂直 Fuzzy Skin 矩陣卡 (150% 128x75mm)',
       fn: generateFuzzySkinCard
     },
     {
       id: 'tolerance',
-      filename: '05_Bambu_Tolerance_Gauge_Card_85x50.3mf',
-      nameZh: '精密公差測試卡 (4x5)',
+      filename: '05_Bambu_Tolerance_Gauge_Card_128x75.3mf',
+      nameZh: '精密公差測試卡 (150% 128x75mm)',
       fn: generateToleranceCard
     }
   ];

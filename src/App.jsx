@@ -185,7 +185,7 @@ export default function App() {
       const blob = await exportTo3MF(geometry, params, thumbBlob);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const filename = `Bambu_${params.brand}_${params.material}_${presetId}_85x50.3mf`.replace(/\s+/g, '_');
+      const filename = `Bambu_${params.brand}_${params.material}_${presetId}_128x75.3mf`.replace(/\s+/g, '_');
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
@@ -207,7 +207,7 @@ export default function App() {
       const blob = exportToSTL(geometry);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const filename = `Bambu_${params.brand}_${params.material}_${presetId}_85x50.stl`.replace(/\s+/g, '_');
+      const filename = `Bambu_${params.brand}_${params.material}_${presetId}_128x75.stl`.replace(/\s+/g, '_');
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
@@ -221,7 +221,7 @@ export default function App() {
   };
 
   const handleCopySpecs = async () => {
-    const summary = `[${params.brand} ${params.material} 85x50mm Slicer Profile]
+    const summary = `[${params.brand} ${params.material} 128x75mm Slicer Profile]
 - Model: ${presetId.toUpperCase()}
 - Nozzle Temp: ${params.nozzleTemp}°C
 - Bed Temp: ${params.bedTemp}°C
@@ -231,7 +231,7 @@ export default function App() {
 - Pressure Advance (K): ${params.kFactor}
 - Finish: ${params.finish}
 - Notes: ${params.notes}
-* Dimensions: 85x50mm Standard Card`;
+* Dimensions: 128x75mm (150% Scale) Standard Card`;
 
     await navigator.clipboard.writeText(summary);
     setCopied(true);

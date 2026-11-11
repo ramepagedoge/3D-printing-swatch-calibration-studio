@@ -2,46 +2,46 @@ export const MODEL_PRESETS = [
   {
     id: 'swatch',
     name: 'Translucent Filament Swatch',
-    nameZh: '多階透光色票樣卡',
-    description: 'Standard 85×50mm card with 5-step thickness window, lanyard hole, and line width gauge.',
-    descriptionZh: '標準 85×50mm 規格，具備 5 階透光窗、掛孔與精度肋條。',
-    defaultSize: { width: 85, length: 50, height: 2.4 },
+    nameZh: '多階透光色票樣卡 (150%)',
+    description: '150% scaled 128×75mm card with 5-step thickness window, lanyard hole, and line width gauge.',
+    descriptionZh: '150% 放大 128×75mm 規格，具備 5 階透光窗、掛孔與精度肋條，厚度孔洞不變。',
+    defaultSize: { width: 127.5, length: 75.0, height: 2.4 },
     category: 'swatch'
   },
   {
     id: 'bridge',
     name: 'Dual-Track Bridging Test Card',
-    nameZh: '雙軌橋接測試校準卡',
-    description: 'Narrow (2mm) and wide (5mm) bridging tracks across 5 spans with a 1-5mm droop gauge.',
-    descriptionZh: '窄線 (2mm) 與寬帶 (5mm) 雙軌 5 階跨距測試，附帶 1~5mm 階梯下垂量測標尺。',
-    defaultSize: { width: 85, length: 50, height: 9.4 },
+    nameZh: '雙軌橋接測試校準卡 (150%)',
+    description: 'Narrow and wide bridging tracks across 5 spans (15-75mm) with a 1-5mm droop gauge.',
+    descriptionZh: '窄線與寬帶雙軌 5 階跨距測試 (15~75mm)，附帶 1~5mm 階梯下垂量測標尺。',
+    defaultSize: { width: 127.5, length: 75.0, height: 9.4 },
     category: 'bridge'
   },
   {
     id: 'ironing',
     name: 'Top Surface Ironing Matrix',
-    nameZh: '表面熨燙校準矩陣卡',
+    nameZh: '表面熨燙校準矩陣卡 (150%)',
     description: '4×5 matrix testing flow rates against line spacings for optimal top surface finish.',
     descriptionZh: '4×5 測試矩陣（流量% × 行間距），精準調校頂層平整度與光澤。',
-    defaultSize: { width: 85, length: 50, height: 3.2 },
+    defaultSize: { width: 127.5, length: 75.0, height: 3.2 },
     category: 'ironing'
   },
   {
     id: 'fuzzy',
     name: 'Vertical Fuzzy Skin Matrix',
-    nameZh: '垂直外壁 Fuzzy 噪波卡',
+    nameZh: '垂直外壁 Fuzzy 噪波卡 (150%)',
     description: 'Standalone vertical card with a 4×4 tactile grid of point distance vs skin thickness.',
-    descriptionZh: '直立獨立卡片，包含 4×4 點間距與噪波厚度矩陣，直觀比對手感觸感。',
-    defaultSize: { width: 85, length: 2.4, height: 50.0 },
+    descriptionZh: '直立獨立卡片 (128x75mm)，包含 4×4 點間距與噪波厚度矩陣，直觀比對手感觸感。',
+    defaultSize: { width: 127.5, length: 2.4, height: 75.0 },
     category: 'fuzzy'
   },
   {
     id: 'tolerance',
     name: 'Precision Tolerance Gauge',
-    nameZh: '精密配合公差量規卡',
+    nameZh: '精密配合公差量規卡 (150%)',
     description: '4 pin diameters across 5 clearance gap levels (20 stations) to evaluate fit and shrinkage.',
-    descriptionZh: '4 組不同圓銷直徑配合 5 階公差間隙（共 20 個插孔），測試機構裝配與材料收縮。',
-    defaultSize: { width: 85, length: 50, height: 4.8 },
+    descriptionZh: '4 組精密圓銷直徑配合 5 階公差間隙（共 20 個插孔），測試機構裝配與材料收縮。',
+    defaultSize: { width: 127.5, length: 75.0, height: 4.8 },
     category: 'tolerance'
   }
 ];

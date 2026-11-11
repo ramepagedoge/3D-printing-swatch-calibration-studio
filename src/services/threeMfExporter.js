@@ -19,7 +19,7 @@ export async function exportTo3MF(geometry, params, thumbnailBlob) {
   const zip = new JSZip();
 
   const presetId = geometry.userData?.presetId || 'card';
-  const modelName = `Bambu_${params.brand || 'Custom'}_${params.material || 'PLA'}_${presetId}_85x50`.replace(/\s+/g, '_');
+  const modelName = `Bambu_${params.brand || 'Custom'}_${params.material || 'PLA'}_${presetId}_128x75`.replace(/\s+/g, '_');
 
   let parts = geometry.userData?.parts;
   if (!parts || parts.length === 0) {

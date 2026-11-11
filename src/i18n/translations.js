@@ -24,7 +24,7 @@ export const TRANSLATIONS = {
     presets: {
       swatch: {
         name: 'Translucent Filament Swatch',
-        desc: 'Standard 85×50mm card with 5-step thickness window, lanyard hole, and line width gauge.'
+        desc: 'Standard 128×75mm card with 5-step thickness window, lanyard hole, and line width gauge.'
       },
       bridge: {
         name: 'Dual-Track Bridging Test Card',
@@ -45,7 +45,7 @@ export const TRANSLATIONS = {
     },
 
     // Parameter Panel
-    modelSelectTitle: 'Select Calibration Card (85×50mm)',
+    modelSelectTitle: 'Select Calibration Card (128×75mm)',
     matrixParamsTitle: 'Preset Matrix & Geometry',
     ironingXTitle: 'X-Axis: Line Spacing (5 Cols)',
     ironingYTitle: 'Y-Axis: Flow Rate % (4 Rows)',
@@ -96,7 +96,7 @@ export const TRANSLATIONS = {
     customNotes: 'Physical Text Notes',
     customNotesPlaceholder: 'e.g. 0.4 NOZZLE / DRY 6H',
     dimensions: 'Dimensions',
-    standardCard: '85 × 50 mm Standard Card',
+    standardCard: '128 × 75 mm (150%) Standard Card',
     triangles: 'Triangles:',
 
     // Modal Guide
@@ -126,7 +126,7 @@ export const TRANSLATIONS = {
     presets: {
       swatch: {
         name: '多階透光色票樣卡',
-        desc: '標準 85×50mm 規格，具備 5 階透光窗、掛孔與精度肋條。'
+        desc: '標準 128×75mm 規格，具備 5 階透光窗、掛孔與精度肋條。'
       },
       bridge: {
         name: '雙軌橋接測試校準卡',
@@ -146,7 +146,7 @@ export const TRANSLATIONS = {
       }
     },
 
-    modelSelectTitle: '測試卡模型切換 (85×50mm)',
+    modelSelectTitle: '測試卡模型切換 (128×75mm)',
     matrixParamsTitle: '測試專屬矩陣與幾何參數',
     ironingXTitle: 'X 軸：線間距 (5 欄)',
     ironingYTitle: 'Y 軸：熨燙流量 % (4 列)',
@@ -197,7 +197,7 @@ export const TRANSLATIONS = {
     customNotes: '實體陰刻備忘文字',
     customNotesPlaceholder: '自訂刻印在模型上的標註 (如 0.4 NOZZLE / DRY 6H)',
     dimensions: '尺寸規格',
-    standardCard: '85 × 50 mm 統一色票規格',
+    standardCard: '128 × 75 mm (150%) 統一色票規格',
     triangles: '幾何三角面數:',
 
     infoTitle: 'Bambu Studio & MakerWorld 3MF 規格標準',
@@ -226,7 +226,7 @@ export const TRANSLATIONS = {
     presets: {
       swatch: {
         name: 'Lichtdurchlässiges Farbmuster',
-        desc: 'Standard 85×50mm Karte mit 5 Stufen Lichtdurchlässigkeit, Loch und Linienmessung.'
+        desc: 'Standard 128×75mm Karte mit 5 Stufen Lichtdurchlässigkeit, Loch und Linienmessung.'
       },
       bridge: {
         name: 'Doppelspur-Brücken-Testkarte',
@@ -246,7 +246,7 @@ export const TRANSLATIONS = {
       }
     },
 
-    modelSelectTitle: 'Testkarte wählen (85×50mm)',
+    modelSelectTitle: 'Testkarte wählen (128×75mm)',
     matrixParamsTitle: 'Matrix- & Geometrieparameter',
     ironingXTitle: 'X-Achse: Linienabstand (5 Spalten)',
     ironingYTitle: 'Y-Achse: Flussrate % (4 Zeilen)',
@@ -297,7 +297,7 @@ export const TRANSLATIONS = {
     customNotes: 'Geprägter Notiztext',
     customNotesPlaceholder: 'z.B. 0.4 NOZZLE / DRY 6H',
     dimensions: 'Abmessungen',
-    standardCard: '85 × 50 mm Standardkarte',
+    standardCard: '128 × 75 mm (150%) Standardkarte',
     triangles: 'Dreiecke:',
 
     infoTitle: 'Bambu Studio & MakerWorld 3MF Standards',
@@ -326,7 +326,7 @@ export const TRANSLATIONS = {
     presets: {
       swatch: {
         name: 'Échantillon de filament translucide',
-        desc: 'Carte standard 85×50mm avec 5 épaisseurs de transparence, trou de suspension et jauges de ligne.'
+        desc: 'Carte standard 128×75mm avec 5 épaisseurs de transparence, trou de suspension et jauges de ligne.'
       },
       bridge: {
         name: 'Carte de test de pontage double voie',
@@ -346,7 +346,7 @@ export const TRANSLATIONS = {
       }
     },
 
-    modelSelectTitle: 'Sélectionner une carte de test (85×50mm)',
+    modelSelectTitle: 'Sélectionner une carte de test (128×75mm)',
     matrixParamsTitle: 'Paramètres de matrice et géométrie',
     ironingXTitle: 'Axe X : Espacement des lignes (5 cols)',
     ironingYTitle: 'Axe Y : Débit de lissage % (4 rangs)',
@@ -397,7 +397,7 @@ export const TRANSLATIONS = {
     customNotes: 'Texte physique gravé',
     customNotesPlaceholder: 'ex. BUSE 0.4 / SÉCHAGE 6H',
     dimensions: 'Dimensions',
-    standardCard: 'Carte standard 85 × 50 mm',
+    standardCard: 'Carte standard 128 × 75 mm (150%)',
     triangles: 'Triangles :',
 
     infoTitle: 'Normes Bambu Studio & MakerWorld 3MF',
@@ -426,7 +426,7 @@ export const TRANSLATIONS = {
     presets: {
       swatch: {
         name: 'Muestra de filamento translúcido',
-        desc: 'Tarjeta estándar de 85×50mm con ventana de 5 grosores de luz, orificio y calibre de líneas.'
+        desc: 'Tarjeta estándar de 128×75mm con ventana de 5 grosores de luz, orificio y calibre de líneas.'
       },
       bridge: {
         name: 'Tarjeta de puentes de doble vía',
@@ -446,7 +446,7 @@ export const TRANSLATIONS = {
       }
     },
 
-    modelSelectTitle: 'Seleccionar tarjeta de calibración (85×50mm)',
+    modelSelectTitle: 'Seleccionar tarjeta de calibración (128×75mm)',
     matrixParamsTitle: 'Parámetros de matriz y geometría',
     ironingXTitle: 'Eje X: Espaciado de líneas (5 cols)',
     ironingYTitle: 'Eje Y: Tasa de flujo % (4 filas)',
@@ -497,7 +497,7 @@ export const TRANSLATIONS = {
     customNotes: 'Texto físico grabado',
     customNotesPlaceholder: 'ej. BOQUILLA 0.4 / SECAR 6H',
     dimensions: 'Dimensiones',
-    standardCard: 'Tarjeta estándar 85 × 50 mm',
+    standardCard: 'Tarjeta estándar 128 × 75 mm (150%)',
     triangles: 'Triángulos:',
 
     infoTitle: 'Estándares Bambu Studio & MakerWorld 3MF',
@@ -526,7 +526,7 @@ export const TRANSLATIONS = {
     presets: {
       swatch: {
         name: 'Campione filamento traslucido',
-        desc: 'Scheda standard 85×50mm con finestra a 5 spessori, foro e guide per spessore linee.'
+        desc: 'Scheda standard 128×75mm con finestra a 5 spessori, foro e guide per spessore linee.'
       },
       bridge: {
         name: 'Scheda di test bridging a doppio binario',
@@ -546,7 +546,7 @@ export const TRANSLATIONS = {
       }
     },
 
-    modelSelectTitle: 'Seleziona scheda di calibrazione (85×50mm)',
+    modelSelectTitle: 'Seleziona scheda di calibrazione (128×75mm)',
     matrixParamsTitle: 'Parametri matrice e geometria',
     ironingXTitle: 'Asse X: Spaziatura linee (5 col)',
     ironingYTitle: 'Asse Y: Flusso stiratura % (4 righe)',
@@ -597,7 +597,7 @@ export const TRANSLATIONS = {
     customNotes: 'Note fisiche incise',
     customNotesPlaceholder: 'es. UGELLO 0.4 / ESSICCA 6H',
     dimensions: 'Dimensioni',
-    standardCard: 'Scheda standard 85 × 50 mm',
+    standardCard: 'Scheda standard 128 × 75 mm (150%)',
     triangles: 'Triangoli:',
 
     infoTitle: 'Standard Bambu Studio & MakerWorld 3MF',
@@ -626,7 +626,7 @@ export const TRANSLATIONS = {
     presets: {
       swatch: {
         name: 'Lichtdoorlatend kleurstaal',
-        desc: 'Standaard 85×50mm kaart met 5 diktestappen, ophanggat en lijndiktetests.'
+        desc: 'Standaard 128×75mm kaart met 5 diktestappen, ophanggat en lijndiktetests.'
       },
       bridge: {
         name: 'Dubbelspoor brugtestkaart',
@@ -646,7 +646,7 @@ export const TRANSLATIONS = {
       }
     },
 
-    modelSelectTitle: 'Kies kalibratiekaart (85×50mm)',
+    modelSelectTitle: 'Kies kalibratiekaart (128×75mm)',
     matrixParamsTitle: 'Matrix- & geometrie-instellingen',
     ironingXTitle: 'X-as: Lijnafstand (5 kolommen)',
     ironingYTitle: 'Y-as: Strijksnelheid % (4 rijen)',
@@ -697,7 +697,7 @@ export const TRANSLATIONS = {
     customNotes: 'Fysieke notitietekst',
     customNotesPlaceholder: 'bijv. 0.4 NOZZLE / DROOG 6U',
     dimensions: 'Afmetingen',
-    standardCard: '85 × 50 mm standaardkaart',
+    standardCard: '128 × 75 mm (150%) standaardkaart',
     triangles: 'Driehoeken:',
 
     infoTitle: 'Bambu Studio & MakerWorld 3MF Standaarden',
