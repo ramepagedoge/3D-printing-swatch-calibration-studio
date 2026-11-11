@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Viewport3D from './components/Viewport3D';
 import ParameterPanel from './components/ParameterPanel';
 import InfoModal from './components/InfoModal';
+import SupportModal from './components/SupportModal';
 import { generateTestModelGeometry } from './services/geometryGenerator';
 import { exportTo3MF } from './services/threeMfExporter';
 import { exportToSTL } from './services/stlExporter';
@@ -14,6 +15,7 @@ export default function App() {
   const t = useMemo(() => getTranslation(lang), [lang]);
 
   const [presetId, setPresetId] = useState('swatch');
+  const [supportModalOpen, setSupportModalOpen] = useState(false);
 
   // Form input parameters currently being edited by the user
   const [params, setParams] = useState({
@@ -202,6 +204,14 @@ export default function App() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Trigger playful MakerWorld support modal if user hasn't opted out
+      const hideModal = localStorage.getItem('hideMakerWorldSupportModal') === 'true';
+      if (!hideModal) {
+        setTimeout(() => {
+          setSupportModalOpen(true);
+        }, 400);
+      }
     } catch (err) {
       console.error('Export 3MF Error:', err);
       alert('3MF 匯出失敗: ' + err.message);
@@ -285,6 +295,11 @@ export default function App() {
       </div>
 
       <InfoModal isOpen={infoOpen} onClose={() => setInfoOpen(false)} t={t} />
+      <SupportModal
+        isOpen={supportModalOpen}
+        onClose={() => setSupportModalOpen(false)}
+        t={t}
+      />
     </div>
   );
 }

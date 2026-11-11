@@ -109,7 +109,13 @@ export const TRANSLATIONS = {
     infoFeature3Title: '3. Crisp Physical Text & Slicer Parameter Injection',
     infoFeature3Desc: 'Text is embossed directly onto model surfaces for razor-sharp 3D prints, while customized temperature, bridge speed, and flow settings are injected directly into the 3MF slicer config.',
     cliVerifyTitle: 'Local Bambu Studio CLI Verification Command:',
-    closeBtn: 'Got it'
+    closeBtn: 'Got it',
+    supportModalTitle: '🎉 3MF Downloaded Successfully!',
+    supportModalSubtitle: 'Loving this open-source calibration studio?',
+    supportModalMsg: 'This project took many late nights to fine-tune for Bambu Lab makers! If it saved you filament or dialed in your prints, dropping a quick Like ❤️ or a Boost 🚀 on MakerWorld would mean the world to me! (｡•̀ᴗ-)✧',
+    supportModalBoostBtn: '🚀 Like & Boost on MakerWorld!',
+    supportModalLaterBtn: 'Maybe later, let me print first!',
+    supportModalDontShow: "Don't show this again"
   },
 
   zh: {
@@ -209,7 +215,13 @@ export const TRANSLATIONS = {
     infoFeature3Title: '3. 實體陽刻與即時切片覆寫',
     infoFeature3Desc: '文字直接陽刻於模型頂面，清晰銳利；下載的 3MF 會直接將你調整的溫度、橋接速度與流量比預先填入切片軟體中。',
     cliVerifyTitle: '本機 Bambu Studio CLI 驗證指令:',
-    closeBtn: '我知道了'
+    closeBtn: '我知道了',
+    supportModalTitle: '🎉 3MF 檔案下載完成囉！',
+    supportModalSubtitle: '喜歡這個開源色票與校準小工具嗎？',
+    supportModalMsg: '這是花了好幾個夜晚精心調校的拓竹專屬開源作品～(｡•̀ᴗ-)✧\n如果它幫你省下了線材、印出了漂亮的卡片，求求到 MakerWorld 幫我點個「❤️ 喜歡」或投一張「🚀 Boost 助力票」支持一下作者吧！每一個小愛心都是我繼續維護的滿滿動力！(๑•̀ㅂ•́)و✧',
+    supportModalBoostBtn: '🚀 前往 MakerWorld 點讚 & Boost！',
+    supportModalLaterBtn: '好啦～先去列印！',
+    supportModalDontShow: '不再顯示此提示'
   },
 
   de: {
@@ -309,7 +321,13 @@ export const TRANSLATIONS = {
     infoFeature3Title: '3. Gestochen scharfer Text & Slicer-Parameter',
     infoFeature3Desc: 'Präzise Modellbeschriftung und automatische Übertragung aller Druck- und Temperaturwerte in die 3MF-Datei.',
     cliVerifyTitle: 'Bambu Studio CLI Überprüfungsbefehl:',
-    closeBtn: 'Verstanden'
+    closeBtn: 'Verstanden',
+    supportModalTitle: '🎉 3MF erfolgreich heruntergeladen!',
+    supportModalSubtitle: 'Gefällt dir dieses Open-Source-Studio?',
+    supportModalMsg: 'Dieses Projekt wurde mit viel Liebe für die Bambu Lab-Community entwickelt! Wenn es dir Filament spart oder perfekte Drucke liefert, freue ich mich riesig über ein Like ❤️ oder einen Boost 🚀 auf MakerWorld! (｡•̀ᴗ-)✧',
+    supportModalBoostBtn: '🚀 Like & Boost auf MakerWorld!',
+    supportModalLaterBtn: 'Vielleicht später, erst drucken!',
+    supportModalDontShow: 'Nicht mehr anzeigen'
   },
 
   fr: {
@@ -409,7 +427,13 @@ export const TRANSLATIONS = {
     infoFeature3Title: '3. Gravure physique & injection des paramètres',
     infoFeature3Desc: 'Textes en relief ultra-nets et injection automatique de vos températures, vitesses et débits dans le trancheur.',
     cliVerifyTitle: 'Commande CLI locale de vérification Bambu Studio :',
-    closeBtn: 'Fermer'
+    closeBtn: 'Fermer',
+    supportModalTitle: '🎉 Fichier 3MF téléchargé avec succès !',
+    supportModalSubtitle: 'Vous aimez ce studio de calibration ?',
+    supportModalMsg: 'Ce projet open-source a demandé de nombreuses nuits de travail pour les makers Bambu Lab ! Si cela vous a aidé, un petit Like ❤️ ou un Boost 🚀 sur MakerWorld ferait chaud au cœur ! (｡•̀ᴗ-)✧',
+    supportModalBoostBtn: '🚀 Like & Boost sur MakerWorld !',
+    supportModalLaterBtn: 'Plus tard, place à l\'impression !',
+    supportModalDontShow: 'Ne plus afficher ce message'
   },
 
   es: {
@@ -509,7 +533,13 @@ export const TRANSLATIONS = {
     infoFeature3Title: '3. Textos nítidos en relieve e inyección de datos',
     infoFeature3Desc: 'Rotulación nítida y traspaso automático de parámetros de temperatura y velocidad al laminador.',
     cliVerifyTitle: 'Comando de verificación CLI local de Bambu Studio:',
-    closeBtn: 'Entendido'
+    closeBtn: 'Entendido',
+    supportModalTitle: '🎉 ¡Archivo 3MF descargado con éxito!',
+    supportModalSubtitle: '¿Te gusta este estudio de calibración?',
+    supportModalMsg: '¡Este proyecto open-source requirió muchas noches de trabajo para la comunidad Bambu Lab! Si te ahorró filamento o mejoró tus impresiones, ¡un Like ❤️ o un Boost 🚀 en MakerWorld me alegraría el día! (｡•̀ᴗ-)✧',
+    supportModalBoostBtn: '🚀 ¡Dar Like y Boost en MakerWorld!',
+    supportModalLaterBtn: '¡Quizás luego, a imprimir!',
+    supportModalDontShow: 'No volver a mostrar'
   },
 
   it: {
@@ -609,7 +639,13 @@ export const TRANSLATIONS = {
     infoFeature3Title: '3. Rilievi nitidi e parametri pronti per la stampa',
     infoFeature3Desc: 'Testo in rilievo ben definito e iniezione automatica delle temperature e velocità direttamente nel file di stampa.',
     cliVerifyTitle: 'Comando verifica CLI Bambu Studio locale:',
-    closeBtn: 'Chiudi'
+    closeBtn: 'Chiudi',
+    supportModalTitle: '🎉 File 3MF scaricato con successo!',
+    supportModalSubtitle: 'Ti piace questo studio di calibrazione?',
+    supportModalMsg: 'Questo progetto open-source ha richiesto molte notti di lavoro per i maker Bambu Lab! Se ti ha aiutato a risparmiare filamento, un Like ❤️ o un Boost 🚀 su MakerWorld significherebbe tantissimo! (｡•̀ᴗ-)✧',
+    supportModalBoostBtn: '🚀 Like & Boost su MakerWorld!',
+    supportModalLaterBtn: 'Forse più tardi, ora stampo!',
+    supportModalDontShow: 'Non mostrare più'
   },
 
   nl: {
@@ -709,7 +745,13 @@ export const TRANSLATIONS = {
     infoFeature3Title: '3. Scherp reliëf en geïntegreerde slicerparameters',
     infoFeature3Desc: 'Directe scherpe reliëftekst op het oppervlak en automatische overname van temperaturen en snelheden in de slicer.',
     cliVerifyTitle: 'Lokaal Bambu Studio CLI verificatiecommando:',
-    closeBtn: 'Begrepen'
+    closeBtn: 'Begrepen',
+    supportModalTitle: '🎉 3MF bestand succesvol gedownload!',
+    supportModalSubtitle: 'Vind je deze calibratiestudio handig?',
+    supportModalMsg: 'Dit open-source project is met veel liefde gemaakt voor Bambu Lab-makers! Als het je filament heeft bespaard of mooie prints heeft opgeleverd, zou een Like ❤️ of Boost 🚀 op MakerWorld geweldig zijn! (｡•̀ᴗ-)✧',
+    supportModalBoostBtn: '🚀 Like & Boost op MakerWorld!',
+    supportModalLaterBtn: 'Misschien later, eerst printen!',
+    supportModalDontShow: 'Niet meer weergeven'
   }
 };
 
