@@ -639,7 +639,7 @@ export default function ParameterPanel({
 
         {/* --- SPECIFIC TO SWATCH CARD --- */}
         {presetId === 'swatch' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t.translucentSteps}</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px' }}>
               {(params.translucentSteps || [0.2, 0.4, 0.6, 0.8, 1.0]).map((stepVal, idx) => (
@@ -661,6 +661,57 @@ export default function ParameterPanel({
                   />
                 </div>
               ))}
+            </div>
+
+            {/* Extended Filament Parameters: Flow Ratio, PA / K, Max Vol Speed */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px', marginTop: '2px' }}>
+              <div>
+                <label style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
+                  {t.flowRatio}
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.80"
+                  max="1.20"
+                  className="input-field code-font"
+                  style={{ padding: '4px 6px', fontSize: '11px' }}
+                  value={params.flowRatio ?? 0.98}
+                  onChange={e => updateParam('flowRatio', Number(e.target.value))}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
+                  {t.kFactor}
+                </label>
+                <input
+                  type="number"
+                  step="0.005"
+                  min="0.000"
+                  max="0.150"
+                  className="input-field code-font"
+                  style={{ padding: '4px 6px', fontSize: '11px' }}
+                  value={params.kFactor ?? 0.020}
+                  onChange={e => updateParam('kFactor', Number(e.target.value))}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
+                  VOL (mm³/s)
+                </label>
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="50"
+                  className="input-field code-font"
+                  style={{ padding: '4px 6px', fontSize: '11px' }}
+                  value={params.maxVolSpeed ?? 21}
+                  onChange={e => updateParam('maxVolSpeed', Number(e.target.value))}
+                />
+              </div>
             </div>
           </div>
         )}

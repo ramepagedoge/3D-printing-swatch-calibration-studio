@@ -177,28 +177,35 @@ export function generateSwatchCard(params, font) {
   // Zone 2. Left Column: Specs Badge (Engraved 0.45mm, enlarged to >= 150%)
   const brand = (params.brand || 'BAMBU LAB').toUpperCase();
   const material = (params.material || 'PLA BASIC').toUpperCase();
-  const tempStr = `${params.nozzleTemp || 220}C / ${params.bedTemp || 55}C`;
-  const speedStr = `${params.bridgeSpeed || 50}mm/s | ${params.flowRatio || 0.98}`;
+  const tempStr = `${params.nozzleTemp || 220}°C / ${params.bedTemp || 55}°C`;
+  const flowStr = `FLOW: ${Number(params.flowRatio ?? 0.98).toFixed(2)}`;
+  const paStr = `PA / K: ${Number(params.kFactor ?? 0.020).toFixed(3)}`;
+  const volStr = `VOL: ${params.maxVolSpeed || 21}mm³/s`;
+  const specStr = (params.notes && params.notes !== 'STANDARD 0.4 NOZZLE') 
+    ? params.notes.toUpperCase() 
+    : 'NOZ: 0.40 | 0.20';
   const badgeX = -58.0;
 
-  // Auto-fit brand font size (scaled to 150%: target 4.6, constrained to max 34mm width)
-  let brandSize = 4.6;
-  const testBrandGeo = new TextGeometry(brand, { font: font, size: brandSize, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-  testBrandGeo.computeBoundingBox();
-  const testBrandW = testBrandGeo.boundingBox.max.x - testBrandGeo.boundingBox.min.x;
-  if (testBrandW > 34.0) {
-    brandSize = Math.max(2.8, brandSize * (34.0 / testBrandW));
-  }
-
-  const textLines = [
-    { text: brand, size: brandSize, x: badgeX, y: 4.5 },
-    { text: material, size: 4.0, x: badgeX, y: -1.0 },
-    { text: tempStr, size: 3.4, x: badgeX, y: -6.5 },
-    { text: speedStr, size: 3.4, x: badgeX, y: -12.0 }
+  const rawLines = [
+    { text: brand, targetSize: 4.5, y: 9.0, maxW: 34.0 },
+    { text: material, targetSize: 4.0, y: 3.5, maxW: 34.0 },
+    { text: tempStr, targetSize: 3.4, y: -2.0, maxW: 34.0 },
+    { text: flowStr, targetSize: 3.4, y: -7.5, maxW: 34.0 },
+    { text: paStr, targetSize: 3.4, y: -13.0, maxW: 34.0 },
+    { text: volStr, targetSize: 3.4, y: -18.5, maxW: 34.0 },
+    { text: specStr, targetSize: 3.4, y: -24.0, maxW: 34.0 }
   ];
-  textLines.forEach(l => {
-    const tGeo = new TextGeometry(l.text, { font: font, size: l.size, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-    tGeo.translate(l.x, l.y, textZ);
+
+  rawLines.forEach(l => {
+    let size = l.targetSize;
+    let tGeo = new TextGeometry(l.text, { font: font, size: size, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    tGeo.computeBoundingBox();
+    let w = tGeo.boundingBox.max.x - tGeo.boundingBox.min.x;
+    if (w > l.maxW) {
+      size = Math.max(2.4, size * (l.maxW / w));
+      tGeo = new TextGeometry(l.text, { font: font, size: size, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    }
+    tGeo.translate(badgeX, l.y, textZ);
     badgeGeos.push(tGeo.toNonIndexed());
   });
 
@@ -244,12 +251,11 @@ export function generateSwatchCard(params, font) {
     addGeos.push(sGeo.toNonIndexed());
   });
 
-  // Zone 6. Bottom footer title: SWATCH 128x75
+  // Zone 6. Bottom footer title: SWATCH 128x75 (placed cleanly under test zones)
   const botTxt = new TextGeometry("SWATCH 128x75", { font: font, size: 4.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   botTxt.computeBoundingBox();
   const bw = botTxt.boundingBox.max.x - botTxt.boundingBox.min.x;
-  botTxt.translate(-bw / 2, -29.0, textZ);
-  botTxt.translate(-bw / 2, -28.0, textZ);
+  botTxt.translate(14.0 - bw / 2, -28.5, textZ);
   gaugeGeos.push(botTxt.toNonIndexed());
 
   evaluator.useCDTClipping = true;
@@ -401,11 +407,10 @@ export function generateBridgeCard(params, font) {
 
   // Parameter Banner: cleanly placed at bottom Y = -31.0 (enlarged to 140%: size 4.2)
   const banner = `SPEED: ${params.bridgeSpeed || 50}mm/s | FLOW: ${params.bridgeFlow || 0.95}`;
-  const bannerText = new TextGeometry(banner, { font: font, size: 4.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const bannerText = new TextGeometry(banner, { font: font, size: 4.2, depth: textDepth, curveSegments: 2, bevelEnabled: false });
   bannerText.computeBoundingBox();
   const bannerW = bannerText.boundingBox.max.x - bannerText.boundingBox.min.x;
   bannerText.translate(-bannerW / 2, -31.0, textZ);
-  textGeos.push(bannerText.toNonIndexed());
   textGeos.push(bannerText.toNonIndexed());
 
   // Cut light inspection windows under bridges with CDT

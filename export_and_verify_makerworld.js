@@ -32,6 +32,7 @@ async function generateAndVerifyMakerWorldDefaults() {
     bridgeFlow: 0.95,
     flowRatio: 0.98,
     kFactor: 0.020,
+    maxVolSpeed: 21,
     notes: 'STANDARD 0.4 NOZZLE',
     includeHole: true,
 

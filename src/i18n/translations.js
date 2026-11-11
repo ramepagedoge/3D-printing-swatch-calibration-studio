@@ -103,6 +103,7 @@ export const TRANSLATIONS = {
     bridgeFlow: 'Bridge Flow',
     flowRatio: 'Extrusion Flow',
     kFactor: 'Pressure Adv. (K)',
+    maxVolSpeed: 'Max Volumetric Speed (mm³/s)',
     
     customNotes: 'Physical Text Notes',
     customNotesPlaceholder: 'e.g. 0.4 NOZZLE / DRY 6H',
@@ -221,6 +222,7 @@ export const TRANSLATIONS = {
     bridgeFlow: '橋接流量比',
     flowRatio: '全域流量比',
     kFactor: '壓力提前 (K)',
+    maxVolSpeed: '最大體積流量 (mm³/s)',
     
     customNotes: '實體陰刻備忘文字',
     customNotesPlaceholder: '自訂刻印在模型上的標註 (如 0.4 NOZZLE / DRY 6H)',
@@ -338,6 +340,7 @@ export const TRANSLATIONS = {
     bridgeFlow: 'Brückenfluss',
     flowRatio: 'Flussverhältnis',
     kFactor: 'Pressure Advance (K)',
+    maxVolSpeed: 'Max. Volumenstrom (mm³/s)',
     
     customNotes: 'Geprägter Notiztext',
     customNotesPlaceholder: 'z.B. 0.4 NOZZLE / DRY 6H',
@@ -455,6 +458,7 @@ export const TRANSLATIONS = {
     bridgeFlow: 'Débit de pont',
     flowRatio: 'Débit global',
     kFactor: 'Avance de pression (K)',
+    maxVolSpeed: 'Vitesse volumétrique max (mm³/s)',
     
     customNotes: 'Texte physique gravé',
     customNotesPlaceholder: 'ex. BUSE 0.4 / SÉCHAGE 6H',
@@ -572,6 +576,7 @@ export const TRANSLATIONS = {
     bridgeFlow: 'Flujo de puente',
     flowRatio: 'Tasa de flujo global',
     kFactor: 'Avance de presión (K)',
+    maxVolSpeed: 'Velocidad volumétrica máx (mm³/s)',
     
     customNotes: 'Texto físico grabado',
     customNotesPlaceholder: 'ej. BOQUILLA 0.4 / SECAR 6H',
@@ -689,6 +694,7 @@ export const TRANSLATIONS = {
     bridgeFlow: 'Flusso ponte',
     flowRatio: 'Rapporto di flusso',
     kFactor: 'Avanzamento pressione (K)',
+    maxVolSpeed: 'Portata volumetrica max (mm³/s)',
     
     customNotes: 'Note fisiche incise',
     customNotesPlaceholder: 'es. UGELLO 0.4 / ESSICCA 6H',
@@ -806,6 +812,7 @@ export const TRANSLATIONS = {
     bridgeFlow: 'Brugstroom',
     flowRatio: 'Stroomverhouding',
     kFactor: 'Drukcompensatie (K)',
+    maxVolSpeed: 'Max. volumetrische snelheid (mm³/s)',
     
     customNotes: 'Fysieke notitietekst',
     customNotesPlaceholder: 'bijv. 0.4 NOZZLE / DROOG 6U',
