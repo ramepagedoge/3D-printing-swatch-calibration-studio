@@ -221,6 +221,29 @@ export default function ParameterPanel({
                 </div>
               </div>
             </div>
+
+            {/* Extrusion Flow Ratio for Ironing Calibration */}
+            <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
+              <div className="slider-container">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', marginBottom: '6px' }}>
+                  <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>{t.flowRatio}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
+                    <input
+                      type="number" step="0.01" min="0.40" max="2.00"
+                      value={params.flowRatio ?? 0.98}
+                      onChange={e => updateParam('flowRatio', Number(e.target.value))}
+                      className="input-field code-font"
+                      style={{ width: '48px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px' }}
+                    />
+                  </div>
+                </div>
+                <input
+                  type="range" min="0.60" max="1.40" step="0.01"
+                  value={params.flowRatio ?? 0.98}
+                  onChange={e => updateParam('flowRatio', Number(e.target.value))}
+                />
+              </div>
+            </div>
           </div>
         )}
 
@@ -516,6 +539,50 @@ export default function ParameterPanel({
                 onChange={e => updateParam('bridgePillarHeight', Number(e.target.value))}
               />
             </div>
+
+            {/* Bridge Speed & Bridge Flow Ratio for Bridge Calibration */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="slider-container">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{t.bridgeSpeed}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
+                    <input
+                      type="number" step="5" min="5" max="350"
+                      value={params.bridgeSpeed ?? 50}
+                      onChange={e => updateParam('bridgeSpeed', Number(e.target.value))}
+                      className="input-field code-font"
+                      style={{ width: '44px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px' }}
+                    />
+                    <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>mm/s</span>
+                  </div>
+                </div>
+                <input
+                  type="range" min="10" max="250" step="5"
+                  value={params.bridgeSpeed ?? 50}
+                  onChange={e => updateParam('bridgeSpeed', Number(e.target.value))}
+                />
+              </div>
+
+              <div className="slider-container">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{t.bridgeFlow}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
+                    <input
+                      type="number" step="0.01" min="0.20" max="2.00"
+                      value={params.bridgeFlow ?? 0.95}
+                      onChange={e => updateParam('bridgeFlow', Number(e.target.value))}
+                      className="input-field code-font"
+                      style={{ width: '48px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px' }}
+                    />
+                  </div>
+                </div>
+                <input
+                  type="range" min="0.50" max="1.50" step="0.01"
+                  value={params.bridgeFlow ?? 0.95}
+                  onChange={e => updateParam('bridgeFlow', Number(e.target.value))}
+                />
+              </div>
+            </div>
           </div>
         )}
 
@@ -684,159 +751,7 @@ export default function ParameterPanel({
 
       <hr style={{ borderColor: 'var(--border)', margin: '0' }} />
 
-      {/* 4. Core Slicer Temperature & Bridge Tuning */}
-      <div>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          marginBottom: '8px',
-          color: 'var(--text-muted)',
-          fontSize: '11px',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px'
-        }}>
-          <Thermometer size={13} color="#f97316" />
-          <span>{t.slicerSection}</span>
-        </div>
-
-        {/* Nozzle & Bed Temperature */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-          <div className="slider-container">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>{t.nozzleTemp}</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
-                <input
-                  type="number" step="1" min="130" max="400"
-                  value={params.nozzleTemp ?? 220}
-                  onChange={e => updateParam('nozzleTemp', Number(e.target.value))}
-                  className="input-field code-font"
-                  style={{ width: '46px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px', color: '#f97316' }}
-                />
-                <span style={{ fontSize: '9px', color: '#f97316' }}>°C</span>
-              </div>
-            </div>
-            <input
-              type="range" min="140" max="360" step="5"
-              value={params.nozzleTemp ?? 220}
-              onChange={e => updateParam('nozzleTemp', Number(e.target.value))}
-            />
-          </div>
-
-          <div className="slider-container">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>{t.bedTemp}</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
-                <input
-                  type="number" step="1" min="0" max="160"
-                  value={params.bedTemp ?? 55}
-                  onChange={e => updateParam('bedTemp', Number(e.target.value))}
-                  className="input-field code-font"
-                  style={{ width: '42px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px', color: '#06b6d4' }}
-                />
-                <span style={{ fontSize: '9px', color: '#06b6d4' }}>°C</span>
-              </div>
-            </div>
-            <input
-              type="range" min="0" max="140" step="5"
-              value={params.bedTemp ?? 55}
-              onChange={e => updateParam('bedTemp', Number(e.target.value))}
-            />
-          </div>
-        </div>
-
-        {/* Bridge Speed & Bridge Flow Ratio */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-          <div className="slider-container">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>{t.bridgeSpeed}</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
-                <input
-                  type="number" step="5" min="5" max="350"
-                  value={params.bridgeSpeed ?? 50}
-                  onChange={e => updateParam('bridgeSpeed', Number(e.target.value))}
-                  className="input-field code-font"
-                  style={{ width: '44px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px' }}
-                />
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>mm/s</span>
-              </div>
-            </div>
-            <input
-              type="range" min="10" max="250" step="5"
-              value={params.bridgeSpeed ?? 50}
-              onChange={e => updateParam('bridgeSpeed', Number(e.target.value))}
-            />
-          </div>
-
-          <div className="slider-container">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>{t.bridgeFlow}</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
-                <input
-                  type="number" step="0.01" min="0.20" max="2.00"
-                  value={params.bridgeFlow ?? 0.95}
-                  onChange={e => updateParam('bridgeFlow', Number(e.target.value))}
-                  className="input-field code-font"
-                  style={{ width: '48px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px' }}
-                />
-              </div>
-            </div>
-            <input
-              type="range" min="0.50" max="1.50" step="0.01"
-              value={params.bridgeFlow ?? 0.95}
-              onChange={e => updateParam('bridgeFlow', Number(e.target.value))}
-            />
-          </div>
-        </div>
-
-        {/* Extrusion Flow Ratio & K Factor */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-          <div className="slider-container">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>{t.flowRatio}</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
-                <input
-                  type="number" step="0.01" min="0.40" max="2.00"
-                  value={params.flowRatio ?? 0.98}
-                  onChange={e => updateParam('flowRatio', Number(e.target.value))}
-                  className="input-field code-font"
-                  style={{ width: '48px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px' }}
-                />
-              </div>
-            </div>
-            <input
-              type="range" min="0.60" max="1.40" step="0.01"
-              value={params.flowRatio ?? 0.98}
-              onChange={e => updateParam('flowRatio', Number(e.target.value))}
-            />
-          </div>
-
-          <div className="slider-container">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>{t.kFactor}</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
-                <input
-                  type="number" step="0.002" min="0.000" max="0.500"
-                  value={params.kFactor ?? 0.020}
-                  onChange={e => updateParam('kFactor', Number(e.target.value))}
-                  className="input-field code-font"
-                  style={{ width: '50px', padding: '1px 3px', fontSize: '11px', textAlign: 'right', height: '20px' }}
-                />
-              </div>
-            </div>
-            <input
-              type="range" min="0.000" max="0.250" step="0.002"
-              value={params.kFactor ?? 0.020}
-              onChange={e => updateParam('kFactor', Number(e.target.value))}
-            />
-          </div>
-        </div>
-      </div>
-
-      <hr style={{ borderColor: 'var(--border)', margin: '0' }} />
-
-      {/* 5. Custom Notes Input */}
+      {/* 4. Custom Notes Input */}
       <div>
         <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
           {t.customNotes}

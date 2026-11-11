@@ -100,6 +100,11 @@ export default function App() {
     // Generate signature of parameters that physically alter 3D topology
     const geoSig = [
       presetId,
+      params.brand,
+      params.material,
+      params.nozzleTemp,
+      params.bedTemp,
+      params.flowRatio,
       params.notes,
       params.includeHole !== false,
       (params.translucentSteps || []).join(','),
@@ -150,6 +155,11 @@ export default function App() {
     };
   }, [
     presetId,
+    params.brand,
+    params.material,
+    params.nozzleTemp,
+    params.bedTemp,
+    params.flowRatio,
     params.notes,
     params.includeHole,
     params.translucentSteps,

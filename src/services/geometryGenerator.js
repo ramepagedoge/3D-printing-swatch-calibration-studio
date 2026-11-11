@@ -181,8 +181,17 @@ export function generateSwatchCard(params, font) {
   const speedStr = `${params.bridgeSpeed || 50}mm/s | ${params.flowRatio || 0.98}`;
   const badgeX = -56.0;
 
+  // Auto-fit brand font size if custom brand name is longer than 30mm
+  let brandSize = 3.2;
+  const testBrandGeo = new TextGeometry(brand, { font: font, size: brandSize, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  testBrandGeo.computeBoundingBox();
+  const testBrandW = testBrandGeo.boundingBox.max.x - testBrandGeo.boundingBox.min.x;
+  if (testBrandW > 30.0) {
+    brandSize = Math.max(2.0, brandSize * (30.0 / testBrandW));
+  }
+
   const textLines = [
-    { text: brand, size: 3.2, x: badgeX, y: 6.0 },
+    { text: brand, size: brandSize, x: badgeX, y: 6.0 },
     { text: material, size: 2.8, x: badgeX, y: 1.0 },
     { text: tempStr, size: 2.3, x: badgeX, y: -4.5 },
     { text: speedStr, size: 2.3, x: badgeX, y: -9.5 }
@@ -812,12 +821,13 @@ export function generateToleranceCard(params, font) {
   clrLbl.translate(-16.0 * S - gw, -21.0 * S, textZ);
   textGeos.push(clrLbl.toNonIndexed());
 
-  // Title "TOLERANCE" rotated 90 degrees vertically along the far left edge
-  const title = new TextGeometry("TOLERANCE", { font: font, size: 3.6 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // Title "TOLERANCE" rotated 90 degrees vertically along the left side
+  // Shifted right to X = -48.0 (10.8mm from left card edge, 11.8mm from row labels)
+  const title = new TextGeometry("TOLERANCE", { font: font, size: 3.2 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   title.rotateZ(Math.PI / 2);
   title.computeBoundingBox();
   const titleH = title.boundingBox.max.y - title.boundingBox.min.y;
-  title.translate(-38.8 * S, -titleH / 2 - 4.0 * S, textZ);
+  title.translate(-48.0, -7.0 - titleH / 2, textZ);
   textGeos.push(title.toNonIndexed());
 
   // Cut pin sockets with CDT clipping

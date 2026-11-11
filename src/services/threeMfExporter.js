@@ -196,19 +196,19 @@ ${partsConfigXml}  </object>
   </plate>
 </config>`);
 
-  // 9. Metadata/project_settings.config with customized parameters
+  // 9. Metadata/project_settings.config: Preserve user default slicer & filament settings
   const projCfg = { ...baseProjectSettings };
   projCfg['version'] = '02.07.01.62';
-  projCfg['nozzle_temperature'] = [String(params.nozzleTemp || 220)];
-  projCfg['nozzle_temperature_initial_layer'] = [String(params.nozzleTemp || 220)];
-  projCfg['bed_temperature'] = [String(params.bedTemp || 55)];
-  projCfg['bed_temperature_initial_layer'] = [String(params.bedTemp || 55)];
-  projCfg['bridge_speed'] = [String(params.bridgeSpeed || 50), String(params.bridgeSpeed || 50)];
-  projCfg['bridge_flow'] = String(params.bridgeFlow || 0.95);
-  projCfg['flow_ratio'] = [String(params.flowRatio || 0.98)];
-  if (params.kFactor !== undefined) {
-    projCfg['pressure_advance'] = [String(params.kFactor)];
+
+  // Only inject targeted test parameters when relevant, keeping user defaults for everything else
+  if (presetId === 'bridge' || params.bridgeSpeed !== undefined) {
+    projCfg['bridge_speed'] = [String(params.bridgeSpeed || 50), String(params.bridgeSpeed || 50)];
+    projCfg['bridge_flow'] = String(params.bridgeFlow || 0.95);
   }
+  if (presetId === 'ironing' || params.flowRatio !== undefined) {
+    projCfg['flow_ratio'] = [String(params.flowRatio || 0.98)];
+  }
+
   projCfg['filament_settings_id'] = [`${params.brand || 'Custom'} ${params.material || 'PLA'} @BBL X1C`];
 
   // If multi-part matrix contains per-part ironing settings, global ironing is 'no ironing'
