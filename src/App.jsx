@@ -29,8 +29,6 @@ export default function App() {
     bridgeFlow: 0.95,
     flowRatio: 0.98,
     kFactor: 0.020,
-    maxVolSpeed: 21,
-    notes: 'STANDARD 0.4 NOZZLE',
     includeHole: true,
 
     // Swatch specific
@@ -108,10 +106,7 @@ export default function App() {
       params.material,
       params.nozzleTemp,
       params.bedTemp,
-      params.flowRatio,
       params.kFactor,
-      params.maxVolSpeed,
-      params.notes,
       params.includeHole !== false,
       (params.translucentSteps || []).join(','),
       params.bridgeMinSpan,

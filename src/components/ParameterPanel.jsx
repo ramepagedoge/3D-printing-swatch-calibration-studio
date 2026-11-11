@@ -663,55 +663,21 @@ export default function ParameterPanel({
               ))}
             </div>
 
-            {/* Extended Filament Parameters: Flow Ratio, PA / K, Max Vol Speed */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px', marginTop: '2px' }}>
-              <div>
-                <label style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
-                  {t.flowRatio}
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0.80"
-                  max="1.20"
-                  className="input-field code-font"
-                  style={{ padding: '4px 6px', fontSize: '11px' }}
-                  value={params.flowRatio ?? 0.98}
-                  onChange={e => updateParam('flowRatio', Number(e.target.value))}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
-                  {t.kFactor}
-                </label>
-                <input
-                  type="number"
-                  step="0.005"
-                  min="0.000"
-                  max="0.150"
-                  className="input-field code-font"
-                  style={{ padding: '4px 6px', fontSize: '11px' }}
-                  value={params.kFactor ?? 0.020}
-                  onChange={e => updateParam('kFactor', Number(e.target.value))}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
-                  VOL (mm³/s)
-                </label>
-                <input
-                  type="number"
-                  step="1"
-                  min="1"
-                  max="50"
-                  className="input-field code-font"
-                  style={{ padding: '4px 6px', fontSize: '11px' }}
-                  value={params.maxVolSpeed ?? 21}
-                  onChange={e => updateParam('maxVolSpeed', Number(e.target.value))}
-                />
-              </div>
+            {/* Extended Filament Parameter: PA / K */}
+            <div style={{ marginTop: '2px' }}>
+              <label style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
+                {t.kFactor}
+              </label>
+              <input
+                type="number"
+                step="0.005"
+                min="0.000"
+                max="0.150"
+                className="input-field code-font"
+                style={{ padding: '4px 6px', fontSize: '11px', width: '100%' }}
+                value={params.kFactor ?? 0.020}
+                onChange={e => updateParam('kFactor', Number(e.target.value))}
+              />
             </div>
           </div>
         )}
@@ -849,22 +815,6 @@ export default function ParameterPanel({
             </select>
           </div>
         </div>
-      </div>
-
-      <hr style={{ borderColor: 'var(--border)', margin: '0' }} />
-
-      {/* 4. Custom Notes Input */}
-      <div>
-        <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
-          {t.customNotes}
-        </label>
-        <input
-          type="text"
-          className="input-field"
-          value={params.notes}
-          onChange={e => updateParam('notes', e.target.value)}
-          placeholder={t.customNotesPlaceholder}
-        />
       </div>
 
       {/* 6. Real-time Print Info Card */}
