@@ -99,25 +99,27 @@ export function generateSwatchCard(params, font) {
     relGeo.translate(startX + i * spacingX, winY, t + reliefH / 2);
     addGeos.push(relGeo.toNonIndexed());
 
-    // Engraved thickness label underneath window (0.45mm debossed)
+    // Engraved thickness label underneath window (0.45mm debossed, enlarged to 2.2mm)
     const lbl = new TextGeometry(`${Number(t).toFixed(1)}`, {
-      font: font, size: 1.6, depth: textDepth, curveSegments: 1, bevelEnabled: false
+      font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false
     });
-    lbl.translate(startX + i * spacingX - 2.2, winY - 8.2, textZ);
+    lbl.computeBoundingBox();
+    const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
+    lbl.translate(startX + i * spacingX - lw / 2, winY - 8.6, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // 2. Left Column: Specs Badge (Engraved 0.45mm)
+  // 2. Left Column: Specs Badge (Engraved 0.45mm, maximized font sizes)
   const brand = (params.brand || 'BAMBU LAB').toUpperCase();
   const material = (params.material || 'PLA BASIC').toUpperCase();
   const tempStr = `${params.nozzleTemp || 220}C / ${params.bedTemp || 55}C`;
   const speedStr = `${params.bridgeSpeed || 50}mm/s | ${params.flowRatio || 0.98}`;
 
   const textLines = [
-    { text: brand, size: 2.6, x: -39.0, y: 5.0 },
-    { text: material, size: 2.4, x: -39.0, y: 0.5 },
-    { text: tempStr, size: 1.8, x: -39.0, y: -4.5 },
-    { text: speedStr, size: 1.8, x: -39.0, y: -9.0 }
+    { text: brand, size: 3.2, x: -39.0, y: 5.0 },
+    { text: material, size: 2.8, x: -39.0, y: 0.8 },
+    { text: tempStr, size: 2.2, x: -39.0, y: -4.0 },
+    { text: speedStr, size: 2.2, x: -39.0, y: -8.5 }
   ];
   textLines.forEach(l => {
     const tGeo = new TextGeometry(l.text, { font: font, size: l.size, depth: textDepth, curveSegments: 1, bevelEnabled: false });
@@ -134,8 +136,10 @@ export function generateSwatchCard(params, font) {
     rib.translate(rx, -4.0, h + 0.2);
     addGeos.push(rib.toNonIndexed());
   });
-  const ribLbl = new TextGeometry("RIBS 0.2-0.8", { font: font, size: 1.3, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-  ribLbl.translate(-12.5, -12.5, textZ);
+  const ribLbl = new TextGeometry("RIBS 0.2-0.8", { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  ribLbl.computeBoundingBox();
+  const rw = ribLbl.boundingBox.max.x - ribLbl.boundingBox.min.x;
+  ribLbl.translate(-6.5 - rw / 2, -13.0, textZ);
   textGeos.push(ribLbl.toNonIndexed());
 
   // 4. Center-Right: Hole Shrinkage Gauge (Ø2.0, Ø3.0, Ø4.0mm)
@@ -148,8 +152,10 @@ export function generateSwatchCard(params, font) {
     hGeo.translate(hx, -4.0, h / 2);
     holeGeos.push(hGeo.toNonIndexed());
 
-    const dLbl = new TextGeometry(`⌀${d}`, { font: font, size: 1.3, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-    dLbl.translate(hx - 2.2, -12.5, textZ);
+    const dLbl = new TextGeometry(`⌀${d}`, { font: font, size: 1.9, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    dLbl.computeBoundingBox();
+    const dw = dLbl.boundingBox.max.x - dLbl.boundingBox.min.x;
+    dLbl.translate(hx - dw / 2, -13.0, textZ);
     textGeos.push(dLbl.toNonIndexed());
   });
 
@@ -163,9 +169,11 @@ export function generateSwatchCard(params, font) {
     addGeos.push(sGeo.toNonIndexed());
   });
 
-  // Bottom footer title
-  const botTxt = new TextGeometry("SWATCH 85x50", { font: font, size: 1.5, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-  botTxt.translate(-15.0, -21.0, textZ);
+  // Bottom footer title - enlarged to 2.5mm and horizontally centered
+  const botTxt = new TextGeometry("SWATCH 85x50", { font: font, size: 2.5, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  botTxt.computeBoundingBox();
+  const bw = botTxt.boundingBox.max.x - botTxt.boundingBox.min.x;
+  botTxt.translate(-bw / 2, -21.5, textZ);
   textGeos.push(botTxt.toNonIndexed());
 
   evaluator.useCDTClipping = true;
@@ -274,27 +282,31 @@ export function generateBridgeCard(params, font) {
     windowCutout.translate(centerX, y, h / 2);
     subGeos.push(windowCutout.toNonIndexed());
 
-    // Engraved Span label on card base to left of pillar
-    const lbl = new TextGeometry(`${span}`, { font: font, size: 1.5, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-    lbl.translate(centerX - span / 2 - pillarW - 2.8, y - 0.7, textZ);
+    // Engraved Span label on card base to left of pillar - enlarged to 2.2mm
+    const lbl = new TextGeometry(`${span}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    lbl.computeBoundingBox();
+    const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
+    lbl.translate(centerX - span / 2 - pillarW - lw - 1.2, y - 0.9, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // Droop reference steps on left side (1mm, 2mm, 3mm, 4mm, 5mm)
+  // Droop reference steps on left side (1mm, 2mm, 3mm, 4mm, 5mm) - enlarged to 2.2mm
   for (let s = 1; s <= 5; s++) {
     const sy = -16.0 + (s - 1) * 6.5;
     const step = new THREE.BoxGeometry(3.0, 4.0, s);
     step.translate(-35.0, sy, h + s / 2);
     addGeos.push(step.toNonIndexed());
 
-    const slbl = new TextGeometry(`${s}`, { font: font, size: 1.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-    slbl.translate(-39.0, sy - 0.7, textZ);
+    const slbl = new TextGeometry(`${s}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    slbl.computeBoundingBox();
+    const sw = slbl.boundingBox.max.x - slbl.boundingBox.min.x;
+    slbl.translate(-39.5, sy - 0.9, textZ);
     textGeos.push(slbl.toNonIndexed());
   }
 
-  // Parameter Banner - horizontally centered at X = 0 (Engraved 0.45mm)
+  // Parameter Banner - horizontally centered at X = 0 (Engraved 0.45mm, enlarged to 2.4mm)
   const banner = `SPEED: ${params.bridgeSpeed || 50}mm/s | FLOW: ${params.bridgeFlow || 0.95}`;
-  const bannerText = new TextGeometry(banner, { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  const bannerText = new TextGeometry(banner, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   bannerText.computeBoundingBox();
   const bannerCenterX = (bannerText.boundingBox.max.x + bannerText.boundingBox.min.x) / 2;
   bannerText.translate(-bannerCenterX, -22.2, textZ);
@@ -372,30 +384,38 @@ export function generateIroningCard(params, font) {
   const textZ = h - debossDepth;
   const textDepth = 0.8;
 
-  // S(mm) positioned cleanly between the top-left hole (-32.25mm) and 0.10 label (-21.2mm)
-  const sLabel = new TextGeometry("S(mm)", { font: font, size: 1.45, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-  sLabel.translate(-29.2, 17.5, textZ);
+  // S(mm) positioned cleanly between top-left hole and 0.10 label - enlarged to 1.85mm
+  const sLabel = new TextGeometry("S(mm)", { font: font, size: 1.85, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  sLabel.computeBoundingBox();
+  const sw = sLabel.boundingBox.max.x - sLabel.boundingBox.min.x;
+  sLabel.translate(-27.5 - sw / 2, 17.5, textZ);
   textGeos.push(sLabel.toNonIndexed());
 
-  // Column Spacing numbers
+  // Column Spacing numbers - enlarged to 2.2mm and centered above columns
   colSpacings.forEach((sp, c) => {
     const bx = startX + c * pitchX;
-    const lbl = new TextGeometry(`${sp}`, { font: font, size: 1.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-    lbl.translate(bx - 3.2, 17.5, textZ);
+    const lbl = new TextGeometry(`${sp}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    lbl.computeBoundingBox();
+    const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
+    lbl.translate(bx - lw / 2, 17.5, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // F% placed on left, vertically centered between 20% (row 2) and 15% (row 1)
+  // F% placed on left, vertically centered between 20% (row 2) and 15% (row 1) - enlarged to 2.6mm
   const fMidY = (startY + 1 * pitchY + startY + 2 * pitchY) / 2; // -3.0mm
-  const fLabel = new TextGeometry("F%", { font: font, size: 1.9, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-  fLabel.translate(-38.5, fMidY - 0.9, textZ);
+  const fLabel = new TextGeometry("F%", { font: font, size: 2.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  fLabel.computeBoundingBox();
+  const fw = fLabel.boundingBox.max.x - fLabel.boundingBox.min.x;
+  fLabel.translate(-38.8, fMidY - 1.2, textZ);
   textGeos.push(fLabel.toNonIndexed());
 
-  // Row Flow numbers - moved left to -32.5mm to avoid overlap with pads (pad starts at -23.25mm)
+  // Row Flow numbers - enlarged to 2.2mm and cleanly aligned to left of pads (pad starts at -23.25mm)
   rowFlows.forEach((fl, r) => {
     const by = startY + r * pitchY;
-    const lbl = new TextGeometry(`${fl}%`, { font: font, size: 1.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
-    lbl.translate(-32.5, by - 0.8, textZ);
+    const lbl = new TextGeometry(`${fl}%`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    lbl.computeBoundingBox();
+    const lw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
+    lbl.translate(-25.2 - lw, by - 0.9, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
@@ -527,40 +547,40 @@ export function generateFuzzySkinCard(params, font) {
     frontTextGeos.push(geo.toNonIndexed());
   };
 
-  // Column labels on card front face (centered above each column)
+  // Column labels on card front face (centered above each column) - enlarged to 2.4mm
   distances.forEach((d, c) => {
     const px = startX + c * pitchX;
     const str = d.toFixed(2);
-    const lbl = new TextGeometry(str, { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(str, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const w = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
     lbl.translate(px - w / 2, 41.5, 0);
     prepFrontText(lbl);
   });
 
-  // Row labels on card front face (aligned to left of rows)
+  // Row labels on card front face (aligned to left of rows) - enlarged to 2.4mm
   thicknesses.forEach((th, r) => {
     const pz = startZ + r * pitchZ;
     const str = `T${th.toFixed(1)}`;
-    const lbl = new TextGeometry(str, { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(str, { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const w = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
     lbl.translate(startX - 6.5 - w, pz + 2.0, 0);
     prepFrontText(lbl);
   });
 
-  // D(mm) indicator above row labels
-  const dLabel = new TextGeometry("D(mm)", { font: font, size: 1.7, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // D(mm) indicator above row labels - enlarged to 2.2mm
+  const dLabel = new TextGeometry("D(mm)", { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   dLabel.computeBoundingBox();
   const dw = dLabel.boundingBox.max.x - dLabel.boundingBox.min.x;
   dLabel.translate(startX - 6.5 - dw, 41.5, 0);
   prepFrontText(dLabel);
 
-  // Top title banner
-  const title = new TextGeometry("FUZZY 4x4 MATRIX", { font: font, size: 2.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // Top title banner - enlarged to 2.8mm and centered
+  const title = new TextGeometry("FUZZY 4x4 MATRIX", { font: font, size: 2.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   title.computeBoundingBox();
   const tw = title.boundingBox.max.x - title.boundingBox.min.x;
-  title.translate(-tw / 2, 46.2, 0);
+  title.translate(-tw / 2, 46.0, 0);
   prepFrontText(title);
 
   // Subtract all engraved front text markings (100% crisp slicing in Bambu Studio)
@@ -682,33 +702,33 @@ export function generateToleranceCard(params, font) {
       });
     });
 
-    // Row Label with true ⌀ symbol - enlarged to 2.2mm (Engraved 0.45mm)
-    const diaLbl = new TextGeometry(`⌀${Number(dia).toFixed(1)}`, { font: font, size: 2.2, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    // Row Label with true ⌀ symbol - enlarged to 2.8mm (Engraved 0.45mm)
+    const diaLbl = new TextGeometry(`⌀${Number(dia).toFixed(1)}`, { font: font, size: 2.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     diaLbl.computeBoundingBox();
     const lw = diaLbl.boundingBox.max.x - diaLbl.boundingBox.min.x;
-    diaLbl.translate(-16.0 - lw, y - 0.9, textZ);
+    diaLbl.translate(-16.0 - lw, y - 1.1, textZ);
     textGeos.push(diaLbl.toNonIndexed());
   });
 
-  // Column Clearance Labels along bottom - enlarged to 2.0mm and centered (Engraved 0.45mm)
+  // Column Clearance Labels along bottom - enlarged to 2.6mm and centered (Engraved 0.45mm)
   clearances.forEach((c, i) => {
     const x = startX + i * pitchX;
-    const lbl = new TextGeometry(`${Number(c).toFixed(2)}`, { font: font, size: 2.0, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+    const lbl = new TextGeometry(`${Number(c).toFixed(2)}`, { font: font, size: 2.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
     lbl.computeBoundingBox();
     const cw = lbl.boundingBox.max.x - lbl.boundingBox.min.x;
     lbl.translate(x - cw / 2, -21.8, textZ);
     textGeos.push(lbl.toNonIndexed());
   });
 
-  // GAP indicator label (Engraved 0.45mm)
-  const clrLbl = new TextGeometry("GAP", { font: font, size: 1.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // GAP indicator label - enlarged to 2.4mm (Engraved 0.45mm)
+  const clrLbl = new TextGeometry("GAP", { font: font, size: 2.4, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   clrLbl.computeBoundingBox();
   const gw = clrLbl.boundingBox.max.x - clrLbl.boundingBox.min.x;
   clrLbl.translate(-16.0 - gw, -21.8, textZ);
   textGeos.push(clrLbl.toNonIndexed());
 
-  // Title "TOLERANCE" rotated 90 degrees vertically along the far left edge (Engraved 0.45mm)
-  const title = new TextGeometry("TOLERANCE", { font: font, size: 2.8, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // Title "TOLERANCE" rotated 90 degrees vertically along the far left edge - enlarged to 3.6mm (Engraved 0.45mm)
+  const title = new TextGeometry("TOLERANCE", { font: font, size: 3.6, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   title.rotateZ(Math.PI / 2);
   title.computeBoundingBox();
   const titleH = title.boundingBox.max.y - title.boundingBox.min.y;
