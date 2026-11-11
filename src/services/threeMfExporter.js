@@ -2,6 +2,7 @@ import JSZip from 'jszip';
 import * as THREE from 'three';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import baseProjectSettings from '../constants/baseProjectSettings.json' with { type: 'json' };
+import { healMesh } from './meshHealer.js';
 
 function generateUuid(index) {
   const hex = index.toString(16).padStart(4, '0');
@@ -63,27 +64,35 @@ export async function exportTo3MF(geometry, params, thumbnailBlob) {
     const objId = idx + 1;
     const partId = idx + 1;
 
-    // Weld vertices purely by position so all adjacent triangles share vertex indices (100% watertight manifold)
-    const nonIndexed = p.geometry.toNonIndexed();
+    // Run topological heal & weld vertices purely by position so all adjacent triangles share vertex indices (100% watertight manifold)
+    const healedGeo = healMesh(p.geometry, 1e-4);
+    const nonIndexed = healedGeo.toNonIndexed();
     const cleanGeo = new THREE.BufferGeometry();
     cleanGeo.setAttribute('position', nonIndexed.attributes.position);
     const welded = BufferGeometryUtils.mergeVertices(cleanGeo, 1e-4);
 
     const pos = welded.attributes.position.array;
     const vertexCount = welded.attributes.position.count;
-    const index = welded.index ? welded.index.array : [];
-    const triCount = index.length / 3;
+    const rawIndex = welded.index ? welded.index.array : [];
+    const cleanTris = [];
+    for (let i = 0; i < rawIndex.length; i += 3) {
+      const a = rawIndex[i], b = rawIndex[i + 1], c = rawIndex[i + 2];
+      if (a !== b && b !== c && c !== a) {
+        cleanTris.push(a, b, c);
+      }
+    }
+    const triCount = cleanTris.length / 3;
 
     const vArr = new Array(vertexCount);
     for (let i = 0; i < vertexCount; i++) {
       const i3 = i * 3;
-      vArr[i] = `     <vertex x="${pos[i3].toFixed(4)}" y="${pos[i3 + 1].toFixed(4)}" z="${pos[i3 + 2].toFixed(4)}" />\n`;
+      vArr[i] = `     <vertex x="${pos[i3].toFixed(5)}" y="${pos[i3 + 1].toFixed(5)}" z="${pos[i3 + 2].toFixed(5)}" />\n`;
     }
 
     const tArr = new Array(triCount);
     for (let i = 0; i < triCount; i++) {
       const i3 = i * 3;
-      tArr[i] = `     <triangle v1="${index[i3]}" v2="${index[i3 + 1]}" v3="${index[i3 + 2]}" />\n`;
+      tArr[i] = `     <triangle v1="${cleanTris[i3]}" v2="${cleanTris[i3 + 1]}" v3="${cleanTris[i3 + 2]}" />\n`;
     }
 
     const vXml = vArr.join('');
