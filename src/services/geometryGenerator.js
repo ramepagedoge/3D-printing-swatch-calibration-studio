@@ -174,18 +174,14 @@ export function generateSwatchCard(params, font) {
     winLabelGeos.push(lbl.toNonIndexed());
   });
 
-  // Zone 2. Left Column: Specs Badge (Engraved 0.45mm, enlarged to >= 150%, vertically centered & left-aligned)
+  // Zone 2. Left Column: Brand & Material (Engraved 0.45mm, enlarged, vertically centered & left-aligned)
   const brand = (params.brand || 'BAMBU LAB').toUpperCase();
   const material = (params.material || 'PLA BASIC').toUpperCase();
-  const tempStr = `${params.nozzleTemp || 220}°C / ${params.bedTemp || 55}°C`;
-  const paStr = `PA / K: ${Number(params.kFactor ?? 0.020).toFixed(3)}`;
   const badgeX = -58.0;
 
   const rawLines = [
-    { text: brand, targetSize: 4.5, y: 7.0, maxW: 34.0 },
-    { text: material, targetSize: 4.0, y: -1.5, maxW: 34.0 },
-    { text: tempStr, targetSize: 3.4, y: -10.0, maxW: 34.0 },
-    { text: paStr, targetSize: 3.4, y: -18.5, maxW: 34.0 }
+    { text: brand, targetSize: 4.8, y: 0.0, maxW: 34.0 },
+    { text: material, targetSize: 4.2, y: -8.0, maxW: 34.0 }
   ];
 
   rawLines.forEach(l => {

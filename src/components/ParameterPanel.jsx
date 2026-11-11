@@ -639,7 +639,7 @@ export default function ParameterPanel({
 
         {/* --- SPECIFIC TO SWATCH CARD --- */}
         {presetId === 'swatch' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t.translucentSteps}</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px' }}>
               {(params.translucentSteps || [0.2, 0.4, 0.6, 0.8, 1.0]).map((stepVal, idx) => (
@@ -661,23 +661,6 @@ export default function ParameterPanel({
                   />
                 </div>
               ))}
-            </div>
-
-            {/* Extended Filament Parameter: PA / K */}
-            <div style={{ marginTop: '2px' }}>
-              <label style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>
-                {t.kFactor}
-              </label>
-              <input
-                type="number"
-                step="0.005"
-                min="0.000"
-                max="0.150"
-                className="input-field code-font"
-                style={{ padding: '4px 6px', fontSize: '11px', width: '100%' }}
-                value={params.kFactor ?? 0.020}
-                onChange={e => updateParam('kFactor', Number(e.target.value))}
-              />
             </div>
           </div>
         )}
