@@ -51,6 +51,7 @@ export default function App() {
     ironingSpeed: 30,
 
     // Fuzzy skin specific (4x4 standalone vertical)
+    fuzzyNoiseType: 'classic',
     fuzzyMinThickness: 0.1,
     fuzzyMaxThickness: 0.4,
     fuzzyMinDistance: 0.2,
@@ -119,6 +120,7 @@ export default function App() {
       params.ironingMaxSpacing,
       params.ironingMinFlow,
       params.ironingMaxFlow,
+      params.fuzzyNoiseType,
       params.fuzzyMinDistance,
       params.fuzzyMaxDistance,
       params.fuzzyMinThickness,
@@ -174,6 +176,7 @@ export default function App() {
     params.ironingMaxSpacing,
     params.ironingMinFlow,
     params.ironingMaxFlow,
+    params.fuzzyNoiseType,
     params.fuzzyMinDistance,
     params.fuzzyMaxDistance,
     params.fuzzyMinThickness,

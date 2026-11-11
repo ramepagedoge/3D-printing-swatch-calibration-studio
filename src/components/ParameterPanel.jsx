@@ -250,6 +250,57 @@ export default function ParameterPanel({
         {/* --- SPECIFIC TO FUZZY SKIN VERTICAL MATRIX --- */}
         {presetId === 'fuzzy' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {/* Noise Type Selector */}
+            <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: '#10b981' }}>
+                  {t.fuzzyNoiseTypeTitle}
+                </span>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  5 Types
+                </span>
+              </div>
+              <select
+                value={params.fuzzyNoiseType ?? 'classic'}
+                onChange={e => updateParam('fuzzyNoiseType', e.target.value)}
+                className="select-field"
+                style={{
+                  width: '100%',
+                  padding: '6px 8px',
+                  fontSize: '11px',
+                  borderRadius: '5px',
+                  background: 'var(--bg-tertiary)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="classic">{t.fuzzyNoiseClassic}</option>
+                <option value="perlin">{t.fuzzyNoisePerlin}</option>
+                <option value="billow">{t.fuzzyNoiseBillow}</option>
+                <option value="ridgedmulti">{t.fuzzyNoiseRidged}</option>
+                <option value="voronoi">{t.fuzzyNoiseVoronoi}</option>
+              </select>
+
+              {/* Informative description for selected noise type */}
+              <div style={{
+                marginTop: '8px',
+                padding: '6px 8px',
+                borderRadius: '4px',
+                background: 'rgba(16, 185, 129, 0.08)',
+                border: '1px solid rgba(16, 185, 129, 0.2)',
+                fontSize: '10px',
+                lineHeight: '1.4',
+                color: '#d1fae5'
+              }}>
+                {(params.fuzzyNoiseType === 'perlin') && t.fuzzyNoiseDescPerlin}
+                {(params.fuzzyNoiseType === 'billow') && t.fuzzyNoiseDescBillow}
+                {(params.fuzzyNoiseType === 'ridgedmulti') && t.fuzzyNoiseDescRidged}
+                {(params.fuzzyNoiseType === 'voronoi') && t.fuzzyNoiseDescVoronoi}
+                {(!params.fuzzyNoiseType || params.fuzzyNoiseType === 'classic') && t.fuzzyNoiseDescClassic}
+              </div>
+            </div>
+
             <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
               <div style={{ fontSize: '11px', fontWeight: 600, color: '#a855f7', marginBottom: '8px' }}>
                 {t.fuzzyXTitle}

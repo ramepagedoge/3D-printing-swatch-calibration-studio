@@ -671,8 +671,10 @@ export function generateFuzzySkinCard(params, font) {
   dLabel.translate(startX - 6.5 * S - dw, 41.5 * S, 0);
   prepFrontText(dLabel);
 
-  // Top title banner
-  const title = new TextGeometry("FUZZY 4x4 MATRIX", { font: font, size: 2.8 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
+  // Top title banner with active noise type
+  const noiseType = (params.fuzzyNoiseType || 'classic').toLowerCase();
+  const titleStr = `FUZZY 4x4 [${noiseType.toUpperCase()}]`;
+  const title = new TextGeometry(titleStr, { font: font, size: 2.4 * S, depth: textDepth, curveSegments: 1, bevelEnabled: false });
   title.computeBoundingBox();
   const tw = title.boundingBox.max.x - title.boundingBox.min.x;
   title.translate(-tw / 2, 46.0 * S, 0);
@@ -713,7 +715,7 @@ export function generateFuzzySkinCard(params, font) {
         geometry: pGeo,
         meta: {
           fuzzy_skin: "all",
-          fuzzy_skin_noise_type: "classic",
+          fuzzy_skin_noise_type: noiseType,
           fuzzy_skin_point_distance: String(dist),
           fuzzy_skin_thickness: String(th)
         }

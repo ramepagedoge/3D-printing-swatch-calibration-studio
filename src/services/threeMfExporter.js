@@ -224,6 +224,7 @@ ${partsConfigXml}  </object>
 
   // If multi-part matrix contains per-part fuzzy skin settings, global fuzzy is 'none'
   const hasFuzzyParts = parts.some(p => p.meta && p.meta.fuzzy_skin);
+  projCfg['fuzzy_skin_noise_type'] = params.fuzzyNoiseType || 'classic';
   if (hasFuzzyParts) {
     projCfg['fuzzy_skin'] = 'none';
   } else if (params.enableFuzzy) {
