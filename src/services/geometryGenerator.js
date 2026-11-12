@@ -758,8 +758,6 @@ export function generateToleranceCard(params, font) {
   const startX = -10.5 * S;
   const pitchX = 11.5 * S;
   const rowY = [-14.0 * S, -4.5 * S, 5.0 * S, 14.5 * S]; // 4 rows
-  const floorH = 1.2;
-  const grooveDepth = h - floorH; // 3.6mm
 
   const holeGeos = [];
   const textGeos = [];
@@ -776,20 +774,20 @@ export function generateToleranceCard(params, font) {
       const x = startX + i * pitchX;
       const outerR = pinR + c;
 
-      // 1. Hole cutout in base plate (hole diameter strictly preserved!)
-      const cylHole = new THREE.CylinderGeometry(outerR, outerR, grooveDepth + 0.2, 32);
+      // 1. Through-hole cutout in base plate (complete through-hole from Z = 0 to h)
+      const cylHole = new THREE.CylinderGeometry(outerR, outerR, h + 1.0, 32);
       cylHole.rotateX(Math.PI / 2);
-      cylHole.translate(x, y, floorH + (grooveDepth + 0.2) / 2);
+      cylHole.translate(x, y, h / 2);
       holeGeos.push(cylHole.toNonIndexed());
 
-      // 2. Central Pin + Coin Slot Twist Grip (batched)
-      const cylPin = new THREE.CylinderGeometry(pinR, pinR, grooveDepth, 32);
+      // 2. Central Pin (print-in-place standalone cylinder from Z = 0 to h) + Top Coin Twist Grip
+      const cylPin = new THREE.CylinderGeometry(pinR, pinR, h, 32);
       cylPin.rotateX(Math.PI / 2);
-      cylPin.translate(x, y, floorH + grooveDepth / 2);
+      cylPin.translate(x, y, h / 2);
 
       const slotW = Math.min(dia * 0.85, 4.2);
       const coinGrip = new THREE.BoxGeometry(slotW, 1.4, 0.9);
-      coinGrip.translate(x, y, h + 0.35);
+      coinGrip.translate(x, y, h + 0.45);
 
       const pinGeo = BufferGeometryUtils.mergeGeometries([cylPin.toNonIndexed(), coinGrip.toNonIndexed()], false);
       pins.push({
