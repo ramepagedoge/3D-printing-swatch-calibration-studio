@@ -28,7 +28,7 @@ export default function ParameterPanel({
   return (
     <aside className="glass-panel" style={{
       width: '390px',
-      height: 'calc(100vh - 56px)',
+      height: '100%',
       borderLeft: '1px solid var(--border)',
       overflowY: 'auto',
       display: 'flex',
