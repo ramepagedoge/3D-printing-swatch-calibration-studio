@@ -189,7 +189,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
     }
 
     const material = new THREE.MeshStandardMaterial({
-      color: params.color || '#00ae42',
+      color: params.color || '#527E65',
       roughness: roughness,
       metalness: metalness,
       flatShading: true

@@ -21,7 +21,7 @@ export default function App() {
   const [params, setParams] = useState({
     brand: 'Bambu Lab',
     material: 'PLA Basic',
-    color: '#00AE42',
+    color: '#527E65',
     finish: 'glossy',
     nozzleTemp: 220,
     bedTemp: 55,

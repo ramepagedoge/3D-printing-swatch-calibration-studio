@@ -179,14 +179,14 @@ export const MATERIAL_PROFILES = [
 ];
 
 export const POPULAR_COLORS = [
-  { name: 'Jade White', hex: '#F5F5F7' },
-  { name: 'Matte Charcoal', hex: '#2C2D30' },
-  { name: 'Bambu Green', hex: '#00AE42' },
-  { name: 'Sunset Orange', hex: '#FF5B00' },
-  { name: 'Cyan Blue', hex: '#009FE3' },
-  { name: 'Crimson Red', hex: '#C8102E' },
-  { name: 'Silk Gold', hex: '#D4AF37' },
-  { name: 'Space Gray', hex: '#6B7280' },
-  { name: 'Cyber Purple', hex: '#8B5CF6' },
-  { name: 'Sunflower Yellow', hex: '#FACC15' }
+  { name: 'Washi Ivory', hex: '#F4F1EA' },
+  { name: 'Sumi Charcoal', hex: '#2C2A29' },
+  { name: 'Matcha Green', hex: '#527E65' },
+  { name: 'Terracotta', hex: '#C26D4A' },
+  { name: 'Indigo Slate', hex: '#3B6275' },
+  { name: 'Latte Wood', hex: '#B89B7A' },
+  { name: 'Sakura Clay', hex: '#D8A7A7' },
+  { name: 'Warm Ash Gray', hex: '#7C7A75' },
+  { name: 'Ochre Gold', hex: '#C99E48' },
+  { name: 'Bambu Green', hex: '#00AE42' }
 ];
