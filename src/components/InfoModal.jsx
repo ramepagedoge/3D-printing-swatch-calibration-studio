@@ -8,7 +8,7 @@ export default function InfoModal({ isOpen, onClose, t }) {
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(0, 0, 0, 0.75)',
+      background: 'rgba(44, 42, 41, 0.45)',
       backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
@@ -24,7 +24,8 @@ export default function InfoModal({ isOpen, onClose, t }) {
         borderRadius: '12px',
         padding: '24px',
         position: 'relative',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.6)'
+        background: '#F7F5F0',
+        boxShadow: '0 20px 40px rgba(44, 42, 41, 0.16)'
       }}>
         {/* Close Button */}
         <button
@@ -43,8 +44,8 @@ export default function InfoModal({ isOpen, onClose, t }) {
         </button>
 
         {/* Title */}
-        <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <ShieldCheck size={20} color="#00ae42" />
+        <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)' }}>
+          <ShieldCheck size={20} color="#3D6B52" />
           {t.infoTitle}
         </h2>
         <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '18px', lineHeight: '1.5' }}>
@@ -53,8 +54,8 @@ export default function InfoModal({ isOpen, onClose, t }) {
 
         {/* Features list */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
-          <div style={{ background: 'var(--bg-tertiary)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--bambu-green)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#3D6B52', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <CheckCircle size={15} />
               {t.infoFeature1Title}
             </div>
@@ -63,8 +64,8 @@ export default function InfoModal({ isOpen, onClose, t }) {
             </div>
           </div>
 
-          <div style={{ background: 'var(--bg-tertiary)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: '#38bdf8', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#3B6275', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <CheckCircle size={15} />
               {t.infoFeature2Title}
             </div>
@@ -73,8 +74,8 @@ export default function InfoModal({ isOpen, onClose, t }) {
             </div>
           </div>
 
-          <div style={{ background: 'var(--bg-tertiary)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: '#f59e0b', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#9E6240', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <CheckCircle size={15} />
               {t.infoFeature3Title}
             </div>
@@ -85,12 +86,12 @@ export default function InfoModal({ isOpen, onClose, t }) {
         </div>
 
         {/* Verification Command Info */}
-        <div style={{ background: '#090b10', padding: '12px', borderRadius: '8px', border: '1px solid #1e293b' }}>
-          <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div style={{ background: '#2C2A29', padding: '12px', borderRadius: '8px', border: '1px solid #44403C' }}>
+          <div style={{ fontSize: '11px', fontWeight: 600, color: '#D6D3CD', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Terminal size={13} />
             {t.cliVerifyTitle}
           </div>
-          <pre className="code-font" style={{ fontSize: '11px', color: '#34d399', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+          <pre className="code-font" style={{ fontSize: '11px', color: '#A7D7BC', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
             /Applications/BambuStudio.app/Contents/MacOS/BambuStudio --slice 0 --outputdir /tmp/verify your_model.3mf
           </pre>
         </div>

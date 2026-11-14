@@ -46,9 +46,9 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // 1. Scene
+    // 1. Scene (Warm Japanese Washi Workbench)
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#0c0e14');
+    scene.background = new THREE.Color('#EAE6DF');
     sceneRef.current = scene;
 
     // 2. Camera
@@ -78,18 +78,18 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
     controls.maxPolarAngle = Math.PI / 2 + 0.1; // Don't flip below bed
     controlsRef.current = controls;
 
-    // 5. Studio Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    // 5. Studio Lighting (tuned for Washi light workbench)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.8);
+    const dirLight1 = new THREE.DirectionalLight(0xfffdf9, 1.5);
     dirLight1.position.set(60, -80, 100);
     dirLight1.castShadow = true;
     dirLight1.shadow.mapSize.width = 2048;
     dirLight1.shadow.mapSize.height = 2048;
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xa5b4fc, 0.8);
+    const dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 0.65);
     dirLight2.position.set(-60, 60, 80);
     scene.add(dirLight2);
 
@@ -98,7 +98,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
     scene.add(bottomFill);
 
     // 6. Bambu 256x256 Bed Reference & Grid
-    const bedGrid = new THREE.GridHelper(256, 32, 0x00ae42, 0x1f2433);
+    const bedGrid = new THREE.GridHelper(256, 32, 0x3D6B52, 0xD5CFC4);
     bedGrid.rotateX(Math.PI / 2);
     bedGrid.position.z = -0.05;
     scene.add(bedGrid);
@@ -111,7 +111,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
       new THREE.Vector3(-128, 128, 0),
       new THREE.Vector3(-128, -128, 0)
     ]);
-    const bedBorderMat = new THREE.LineBasicMaterial({ color: 0x334155 });
+    const bedBorderMat = new THREE.LineBasicMaterial({ color: 0xB8B0A2 });
     const bedBorder = new THREE.Line(bedBorderGeo, bedBorderMat);
     scene.add(bedBorder);
 
@@ -201,12 +201,12 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
     scene.add(mesh);
     meshRef.current = mesh;
 
-    // Wireframe overlay
+    // Wireframe overlay (Sumi ink for crisp visibility on light surfaces)
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
+      color: 0x2C2A29,
       wireframe: true,
       transparent: true,
-      opacity: 0.15
+      opacity: 0.22
     });
     const wireMesh = new THREE.Mesh(geometry, wireMat);
     wireMesh.visible = wireframe;
@@ -247,11 +247,12 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
         left: '16px',
         display: 'flex',
         gap: '6px',
-        background: 'rgba(22, 25, 34, 0.85)',
+        background: 'rgba(247, 245, 240, 0.9)',
         backdropFilter: 'blur(12px)',
         padding: '5px',
         borderRadius: '8px',
         border: '1px solid var(--border)',
+        boxShadow: '0 4px 14px rgba(44, 42, 41, 0.06)',
         zIndex: 10
       }}>
         <button
@@ -295,11 +296,12 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
         right: '16px',
         display: 'flex',
         gap: '6px',
-        background: 'rgba(22, 25, 34, 0.85)',
+        background: 'rgba(247, 245, 240, 0.9)',
         backdropFilter: 'blur(12px)',
         padding: '5px',
         borderRadius: '8px',
         border: '1px solid var(--border)',
+        boxShadow: '0 4px 14px rgba(44, 42, 41, 0.06)',
         zIndex: 10
       }}>
         <button
@@ -307,24 +309,26 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
           onClick={() => setWireframe(!wireframe)}
           style={{
             padding: '6px 10px',
-            background: wireframe ? 'rgba(0, 174, 66, 0.2)' : 'transparent',
-            borderColor: wireframe ? 'var(--bambu-green)' : 'transparent'
+            background: wireframe ? 'rgba(61, 107, 82, 0.14)' : 'transparent',
+            borderColor: wireframe ? 'var(--bambu-green)' : 'transparent',
+            boxShadow: 'none'
           }}
           title={t?.toggleWireframe || 'Toggle Wireframe'}
         >
-          <Grid size={15} color={wireframe ? '#00ae42' : 'currentColor'} />
+          <Grid size={15} color={wireframe ? 'var(--bambu-green)' : 'currentColor'} />
         </button>
         <button
           className={`btn-secondary ${autoRotate ? 'active' : ''}`}
           onClick={() => setAutoRotate(!autoRotate)}
           style={{
             padding: '6px 10px',
-            background: autoRotate ? 'rgba(0, 174, 66, 0.2)' : 'transparent',
-            borderColor: autoRotate ? 'var(--bambu-green)' : 'transparent'
+            background: autoRotate ? 'rgba(61, 107, 82, 0.14)' : 'transparent',
+            borderColor: autoRotate ? 'var(--bambu-green)' : 'transparent',
+            boxShadow: 'none'
           }}
           title={t?.toggleAutoRotate || 'Auto-rotate Turntable'}
         >
-          <RotateCw size={15} color={autoRotate ? '#00ae42' : 'currentColor'} />
+          <RotateCw size={15} color={autoRotate ? 'var(--bambu-green)' : 'currentColor'} />
         </button>
       </div>
 
@@ -333,7 +337,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'rgba(12, 14, 20, 0.7)',
+          background: 'rgba(247, 245, 240, 0.72)',
           backdropFilter: 'blur(4px)',
           display: 'flex',
           flexDirection: 'column',
@@ -345,7 +349,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
           <div style={{
             width: '36px',
             height: '36px',
-            border: '3px solid rgba(0, 174, 66, 0.2)',
+            border: '3px solid rgba(61, 107, 82, 0.2)',
             borderTopColor: 'var(--bambu-green)',
             borderRadius: '50%',
             animation: 'spin 0.8s linear infinite'
@@ -364,10 +368,12 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
         left: '16px',
         fontSize: '11px',
         color: 'var(--text-muted)',
-        background: 'rgba(22, 25, 34, 0.85)',
+        background: 'rgba(247, 245, 240, 0.9)',
+        backdropFilter: 'blur(8px)',
         padding: '4px 10px',
         borderRadius: '6px',
-        border: '1px solid var(--border)'
+        border: '1px solid var(--border)',
+        boxShadow: '0 2px 8px rgba(44, 42, 41, 0.05)'
       }}>
         {t?.bedSizeInfo || 'Bambu Lab X1C / P1S Bed Size: 256 × 256 mm'}
       </div>

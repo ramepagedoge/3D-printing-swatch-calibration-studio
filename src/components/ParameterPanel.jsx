@@ -50,7 +50,7 @@ export default function ParameterPanel({
           textTransform: 'uppercase',
           letterSpacing: '0.5px'
         }}>
-          <Layers size={13} color="#00ae42" />
+          <Layers size={13} color="var(--bambu-green)" />
           <span>{t.modelSelectTitle}</span>
         </div>
 
@@ -66,8 +66,8 @@ export default function ParameterPanel({
                   padding: '8px 10px',
                   borderRadius: '7px',
                   cursor: 'pointer',
-                  border: isSelected ? '1px solid var(--bambu-green)' : '1px solid var(--border)',
-                  background: isSelected ? 'rgba(0, 174, 66, 0.12)' : 'var(--bg-secondary)',
+                  border: isSelected ? '1.5px solid var(--bambu-green)' : '1px solid var(--border)',
+                  background: isSelected ? 'rgba(61, 107, 82, 0.09)' : '#FFFFFF',
                   transition: 'all 0.15s ease'
                 }}
               >
@@ -80,7 +80,7 @@ export default function ParameterPanel({
                   <span style={{
                     fontSize: '12px',
                     fontWeight: isSelected ? 700 : 500,
-                    color: isSelected ? '#ffffff' : 'var(--text-main)'
+                    color: isSelected ? 'var(--bambu-green)' : 'var(--text-main)'
                   }}>
                     {pInfo.name}
                   </span>
@@ -102,7 +102,7 @@ export default function ParameterPanel({
         </div>
       </div>
 
-      <hr style={{ borderColor: 'var(--border)', margin: '0' }} />
+      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0' }} />
 
       {/* 2. Model-Specific Customizable Parameters (Dynamic per Preset) */}
       <div>
@@ -117,7 +117,7 @@ export default function ParameterPanel({
           textTransform: 'uppercase',
           letterSpacing: '0.5px'
         }}>
-          <Sliders size={13} color="#a855f7" />
+          <Sliders size={13} color="#8C6239" />
           <span>{t.matrixParamsTitle} ({presetId.toUpperCase()})</span>
         </div>
 
@@ -125,7 +125,7 @@ export default function ParameterPanel({
         {presetId === 'ironing' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#38bdf8', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: '#3B6275', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <Grid size={13} />
                 <span>{t.ironingXTitle}</span>
               </div>
@@ -174,7 +174,7 @@ export default function ParameterPanel({
             </div>
 
             <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#f59e0b', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: '#9E6240', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <Grid size={13} />
                 <span>{t.ironingYTitle}</span>
               </div>
@@ -253,7 +253,7 @@ export default function ParameterPanel({
             {/* Noise Type Selector */}
             <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 600, color: '#10b981' }}>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: '#3D6B52' }}>
                   {t.fuzzyNoiseTypeTitle}
                 </span>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -287,11 +287,11 @@ export default function ParameterPanel({
                 marginTop: '8px',
                 padding: '6px 8px',
                 borderRadius: '4px',
-                background: 'rgba(16, 185, 129, 0.08)',
-                border: '1px solid rgba(16, 185, 129, 0.2)',
+                background: 'rgba(61, 107, 82, 0.08)',
+                border: '1px solid rgba(61, 107, 82, 0.22)',
                 fontSize: '10px',
                 lineHeight: '1.4',
-                color: '#d1fae5'
+                color: '#2F5640'
               }}>
                 {(params.fuzzyNoiseType === 'perlin') && t.fuzzyNoiseDescPerlin}
                 {(params.fuzzyNoiseType === 'billow') && t.fuzzyNoiseDescBillow}
@@ -302,7 +302,7 @@ export default function ParameterPanel({
             </div>
 
             <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#a855f7', marginBottom: '8px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: '#8C6239', marginBottom: '8px' }}>
                 {t.fuzzyXTitle}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -350,7 +350,7 @@ export default function ParameterPanel({
             </div>
 
             <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#3b82f6', marginBottom: '8px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: '#3B6275', marginBottom: '8px' }}>
                 {t.fuzzyYTitle}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -403,7 +403,7 @@ export default function ParameterPanel({
         {presetId === 'tolerance' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ background: 'var(--bg-secondary)', padding: '10px', borderRadius: '7px', border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#10b981', marginBottom: '8px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: '#3D6B52', marginBottom: '8px' }}>
                 {t.toleranceYTitle}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
@@ -687,7 +687,7 @@ export default function ParameterPanel({
         </div>
       </div>
 
-      <hr style={{ borderColor: 'var(--border)', margin: '0' }} />
+      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0' }} />
 
       {/* 3. Filament & Material Information */}
       <div>
@@ -702,7 +702,7 @@ export default function ParameterPanel({
           textTransform: 'uppercase',
           letterSpacing: '0.5px'
         }}>
-          <Palette size={13} color="#06b6d4" />
+          <Palette size={13} color="#3B6275" />
           <span>{t.filamentSection}</span>
         </div>
 
@@ -755,10 +755,11 @@ export default function ParameterPanel({
                   height: '20px',
                   borderRadius: '50%',
                   background: c.hex,
-                  border: params.color === c.hex ? '2px solid #ffffff' : '1px solid rgba(255,255,255,0.2)',
+                  border: '1px solid rgba(44, 42, 41, 0.22)',
+                  boxShadow: params.color === c.hex ? '0 0 0 2px #F7F5F0, 0 0 0 4px var(--bambu-green)' : 'none',
                   cursor: 'pointer',
-                  transform: params.color === c.hex ? 'scale(1.15)' : 'scale(1)',
-                  transition: 'transform 0.1s ease'
+                  transform: params.color === c.hex ? 'scale(1.1)' : 'scale(1)',
+                  transition: 'transform 0.1s ease, box-shadow 0.15s ease'
                 }}
               />
             ))}
@@ -803,7 +804,7 @@ export default function ParameterPanel({
       {/* 6. Real-time Print Info Card */}
       <div style={{
         marginTop: 'auto',
-        background: 'rgba(0, 0, 0, 0.4)',
+        background: 'var(--bg-secondary)',
         border: '1px solid var(--border)',
         borderRadius: '7px',
         padding: '10px'
@@ -816,7 +817,7 @@ export default function ParameterPanel({
           <span style={{
             fontSize: '10px',
             color: 'var(--bambu-green)',
-            background: 'rgba(0, 174, 66, 0.1)',
+            background: 'rgba(61, 107, 82, 0.1)',
             padding: '2px 5px',
             borderRadius: '4px'
           }}>
@@ -825,7 +826,7 @@ export default function ParameterPanel({
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
           <span style={{ color: 'var(--text-muted)' }}>{t.triangles}</span>
-          <span className="code-font" style={{ fontWeight: 600, color: '#38bdf8' }}>{triCount.toLocaleString()}</span>
+          <span className="code-font" style={{ fontWeight: 600, color: '#3B6275' }}>{triCount.toLocaleString()}</span>
         </div>
       </div>
     </aside>

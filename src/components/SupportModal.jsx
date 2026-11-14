@@ -27,7 +27,7 @@ export default function SupportModal({ isOpen, onClose, t }) {
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(0, 0, 0, 0.78)',
+      background: 'rgba(44, 42, 41, 0.48)',
       backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
@@ -41,9 +41,10 @@ export default function SupportModal({ isOpen, onClose, t }) {
         borderRadius: '16px',
         padding: '28px 24px 22px',
         position: 'relative',
-        boxShadow: '0 25px 50px -12px rgba(0, 174, 66, 0.25), 0 0 0 1px rgba(0, 174, 66, 0.2)',
+        boxShadow: '0 24px 48px -12px rgba(44, 42, 41, 0.18), 0 0 0 1px rgba(61, 107, 82, 0.18)',
         textAlign: 'center',
-        background: 'linear-gradient(180deg, #161b22 0%, #0d1117 100%)'
+        border: '1px solid var(--border)',
+        background: 'linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%)'
       }}>
         {/* Close Button */}
         <button
@@ -52,7 +53,7 @@ export default function SupportModal({ isOpen, onClose, t }) {
             position: 'absolute',
             top: '16px',
             right: '16px',
-            background: 'rgba(255, 255, 255, 0.05)',
+            background: 'rgba(44, 42, 41, 0.06)',
             border: 'none',
             borderRadius: '50%',
             width: '28px',
@@ -76,12 +77,12 @@ export default function SupportModal({ isOpen, onClose, t }) {
           width: '56px',
           height: '56px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0, 174, 66, 0.3) 0%, rgba(6, 182, 212, 0.1) 70%)',
-          border: '1px solid rgba(0, 174, 66, 0.4)',
+          background: 'rgba(61, 107, 82, 0.1)',
+          border: '1px solid rgba(61, 107, 82, 0.25)',
           marginBottom: '16px',
-          boxShadow: '0 0 20px rgba(0, 174, 66, 0.35)'
+          boxShadow: '0 4px 12px rgba(61, 107, 82, 0.12)'
         }}>
-          <Rocket size={26} color="#00ae42" />
+          <Rocket size={26} color="var(--bambu-green)" />
         </div>
 
         {/* Title */}
@@ -89,7 +90,7 @@ export default function SupportModal({ isOpen, onClose, t }) {
           fontSize: '18px',
           fontWeight: 800,
           marginBottom: '6px',
-          color: '#ffffff',
+          color: 'var(--text-main)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -110,12 +111,12 @@ export default function SupportModal({ isOpen, onClose, t }) {
 
         {/* Playful description */}
         <div style={{
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          background: '#FFFFFF',
+          border: '1px solid var(--border)',
           borderRadius: '10px',
           padding: '14px 16px',
           fontSize: '13px',
-          color: '#cbd5e1',
+          color: '#4A4642',
           lineHeight: '1.6',
           marginBottom: '20px',
           textAlign: 'left',
@@ -133,8 +134,8 @@ export default function SupportModal({ isOpen, onClose, t }) {
               padding: '12px 16px',
               borderRadius: '8px',
               border: 'none',
-              background: 'linear-gradient(135deg, #00ae42 0%, #059669 100%)',
-              color: '#ffffff',
+              background: 'linear-gradient(135deg, #3D6B52 0%, #2F5640 100%)',
+              color: '#FAF8F5',
               fontSize: '14px',
               fontWeight: 700,
               cursor: 'pointer',
@@ -142,13 +143,13 @@ export default function SupportModal({ isOpen, onClose, t }) {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              boxShadow: '0 4px 14px rgba(0, 174, 66, 0.4)',
+              boxShadow: '0 4px 12px rgba(61, 107, 82, 0.28)',
               transition: 'all 0.2s ease'
             }}
           >
-            <Heart size={16} fill="#ffffff" />
+            <Heart size={16} fill="#FAF8F5" />
             <span>{t.supportModalBoostBtn || '🚀 前往 MakerWorld 點讚 & Boost！'}</span>
-            <ExternalLink size={14} style={{ opacity: 0.8 }} />
+            <ExternalLink size={14} style={{ opacity: 0.85 }} />
           </button>
 
           <button
@@ -157,8 +158,8 @@ export default function SupportModal({ isOpen, onClose, t }) {
               width: '100%',
               padding: '9px 16px',
               borderRadius: '8px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              background: 'transparent',
+              border: '1px solid var(--border)',
+              background: '#FFFFFF',
               color: 'var(--text-muted)',
               fontSize: '12px',
               fontWeight: 600,
@@ -183,7 +184,7 @@ export default function SupportModal({ isOpen, onClose, t }) {
             type="checkbox"
             checked={dontShowAgain}
             onChange={e => setDontShowAgain(e.target.checked)}
-            style={{ accentColor: '#00ae42', cursor: 'pointer' }}
+            style={{ accentColor: '#3D6B52', cursor: 'pointer' }}
           />
           <span>{t.supportModalDontShow || '不再顯示此提示'}</span>
         </label>

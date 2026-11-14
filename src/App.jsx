@@ -252,7 +252,7 @@ export default function App() {
       />
 
       <div style={{ display: 'flex', flex: 1, position: 'relative', overflow: 'hidden' }}>
-        <main style={{ flex: 1, position: 'relative', background: '#090b10' }}>
+        <main style={{ flex: 1, position: 'relative', background: '#EAE6DF' }}>
           <Viewport3D
             ref={viewportRef}
             geometry={geometry}

@@ -37,13 +37,13 @@ export default function Header({
           width: '32px',
           height: '32px',
           borderRadius: '8px',
-          background: 'linear-gradient(135deg, #00ae42 0%, #06b6d4 100%)',
+          background: 'linear-gradient(135deg, #3D6B52 0%, #527E65 100%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 0 15px rgba(0, 174, 66, 0.4)'
+          boxShadow: '0 2px 8px rgba(61, 107, 82, 0.22)'
         }}>
-          <Box size={20} color="#ffffff" />
+          <Box size={20} color="#FAF8F5" />
         </div>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -53,11 +53,11 @@ export default function Header({
             <span style={{
               fontSize: '10px',
               fontWeight: 600,
-              background: 'rgba(0, 174, 66, 0.15)',
+              background: 'rgba(61, 107, 82, 0.1)',
               color: 'var(--bambu-green)',
               padding: '2px 6px',
               borderRadius: '4px',
-              border: '1px solid rgba(0, 174, 66, 0.3)'
+              border: '1px solid rgba(61, 107, 82, 0.25)'
             }}>
               {t.bblTag}
             </span>
@@ -75,12 +75,12 @@ export default function Header({
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
-          background: 'var(--bg-secondary)',
+          background: '#FFFFFF',
           padding: '4px 8px',
           borderRadius: '6px',
           border: '1px solid var(--border)'
         }}>
-          <Globe size={14} color="#00ae42" />
+          <Globe size={14} color="var(--bambu-green)" />
           <select
             value={lang}
             onChange={e => setLang(e.target.value)}
@@ -95,7 +95,7 @@ export default function Header({
             }}
           >
             {LANGUAGES.map(l => (
-              <option key={l.code} value={l.code} style={{ background: '#161922', color: '#ffffff' }}>
+              <option key={l.code} value={l.code} style={{ background: '#F7F5F0', color: '#2C2A29' }}>
                 {l.flag} {l.name}
               </option>
             ))}
