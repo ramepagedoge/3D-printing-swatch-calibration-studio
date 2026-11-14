@@ -7,11 +7,11 @@ import SupportModal from './components/SupportModal';
 import { generateTestModelGeometry } from './services/geometryGenerator';
 import { exportTo3MF } from './services/threeMfExporter';
 import { exportToSTL } from './services/stlExporter';
-import { getTranslation } from './i18n/translations';
+import { detectInitialLang, getTranslation } from './i18n/translations';
 
 export default function App() {
-  // Default interface is English, with multi-language selector in Header
-  const [lang, setLang] = useState('en');
+  // Auto-detect browser locale on startup, with manual selector in Header
+  const [lang, setLang] = useState(() => detectInitialLang());
   const t = useMemo(() => getTranslation(lang), [lang]);
 
   const [presetId, setPresetId] = useState('swatch');
@@ -73,7 +73,6 @@ export default function App() {
   const [geometry, setGeometry] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [triCount, setTriCount] = useState(0);
-  const [copied, setCopied] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
 
   const viewportRef = useRef(null);
@@ -92,8 +91,7 @@ export default function App() {
       bridgeFlow: profile.bridgeFlow,
       flowRatio: profile.flowRatio,
       kFactor: profile.kFactor,
-      finish: profile.finish,
-      notes: profile.notes
+      finish: profile.finish
     }));
   };
 
@@ -162,7 +160,6 @@ export default function App() {
     params.nozzleTemp,
     params.bedTemp,
     params.flowRatio,
-    params.notes,
     params.includeHole,
     params.translucentSteps,
     params.bridgeMinSpan,
@@ -241,32 +238,13 @@ export default function App() {
     }
   };
 
-  const handleCopySpecs = async () => {
-    const summary = `[${params.brand} ${params.material} 128x75mm Slicer Profile]
-- Model: ${presetId.toUpperCase()}
-- Nozzle Temp: ${params.nozzleTemp}°C
-- Bed Temp: ${params.bedTemp}°C
-- Bridge Speed: ${params.bridgeSpeed} mm/s
-- Bridge Flow Ratio: ${params.bridgeFlow}
-- Extrusion Flow Ratio: ${params.flowRatio}
-- Pressure Advance (K): ${params.kFactor}
-- Finish: ${params.finish}
-- Notes: ${params.notes}
-* Dimensions: 128x75mm (150% Scale) Standard Card`;
-
-    await navigator.clipboard.writeText(summary);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw' }}>
       <Header
+        presetId={presetId}
         onExport3MF={handleExport3MF}
         onExportSTL={handleExportSTL}
-        onCopySpecs={handleCopySpecs}
         isGenerating={isGenerating}
-        copied={copied}
         onOpenInfo={() => setInfoOpen(true)}
         lang={lang}
         setLang={setLang}
@@ -280,6 +258,7 @@ export default function App() {
             geometry={geometry}
             params={params}
             isGenerating={isGenerating}
+            t={t}
           />
         </main>
 

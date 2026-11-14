@@ -127,7 +127,16 @@ export const TRANSLATIONS = {
     supportModalMsg: 'This project took many late nights to fine-tune for Bambu Lab makers! If it saved you filament or dialed in your prints, dropping a quick Like ❤️ or a Boost 🚀 on MakerWorld would mean the world to me! (｡•̀ᴗ-)✧',
     supportModalBoostBtn: '🚀 Like & Boost on MakerWorld!',
     supportModalLaterBtn: 'Maybe later, let me print first!',
-    supportModalDontShow: "Don't show this again"
+    supportModalDontShow: "Don't show this again",
+    viewTop: 'Top',
+    viewIso: 'Iso',
+    viewFront: 'Front',
+    viewSide: 'Side',
+    toggleWireframe: 'Toggle Wireframe',
+    toggleAutoRotate: 'Auto-rotate Turntable',
+    recalculatingGeo: 'Recalculating 3D Geometry...',
+    bedSizeInfo: 'Bambu Lab X1C / P1S Bed Size: 256 × 256 mm',
+    stlModifierDisabledHint: 'Ironing and Fuzzy Skin matrices require Bambu 3MF to preserve per-part slicer modifiers. Please use Download Bambu 3MF.'
   },
 
   zh: {
@@ -245,7 +254,16 @@ export const TRANSLATIONS = {
     supportModalMsg: '這是花了好幾個夜晚精心調校的拓竹專屬開源作品～(｡•̀ᴗ-)✧\n如果它幫你省下了線材、印出了漂亮的卡片，求求到 MakerWorld 幫我點個「❤️ 喜歡」或投一張「🚀 Boost 助力票」支持一下作者吧！每一個小愛心都是我繼續維護的滿滿動力！(๑•̀ㅂ•́)و✧',
     supportModalBoostBtn: '🚀 前往 MakerWorld 點讚 & Boost！',
     supportModalLaterBtn: '好啦～先去列印！',
-    supportModalDontShow: '不再顯示此提示'
+    supportModalDontShow: '不再顯示此提示',
+    viewTop: '俯視',
+    viewIso: '等角',
+    viewFront: '正視',
+    viewSide: '側視',
+    toggleWireframe: '切換線框網格',
+    toggleAutoRotate: '轉盤自動旋轉展示',
+    recalculatingGeo: '正在重新計算 3D 幾何體...',
+    bedSizeInfo: 'Bambu Lab X1C / P1S 熱床尺寸: 256 × 256 mm',
+    stlModifierDisabledHint: '「表面熨燙」與「Fuzzy Skin」矩陣卡需透過 Bambu 3MF 才能保留各格獨立切片修改器參數，請直接下載 Bambu 3MF。'
   },
 
   de: {
@@ -363,7 +381,16 @@ export const TRANSLATIONS = {
     supportModalMsg: 'Dieses Projekt wurde mit viel Liebe für die Bambu Lab-Community entwickelt! Wenn es dir Filament spart oder perfekte Drucke liefert, freue ich mich riesig über ein Like ❤️ oder einen Boost 🚀 auf MakerWorld! (｡•̀ᴗ-)✧',
     supportModalBoostBtn: '🚀 Like & Boost auf MakerWorld!',
     supportModalLaterBtn: 'Vielleicht später, erst drucken!',
-    supportModalDontShow: 'Nicht mehr anzeigen'
+    supportModalDontShow: 'Nicht mehr anzeigen',
+    viewTop: 'Oben',
+    viewIso: 'Iso',
+    viewFront: 'Vorne',
+    viewSide: 'Seite',
+    toggleWireframe: 'Drahtgitter umschalten',
+    toggleAutoRotate: 'Automatische Drehung',
+    recalculatingGeo: '3D-Geometrie wird neu berechnet...',
+    bedSizeInfo: 'Bambu Lab X1C / P1S Druckbett: 256 × 256 mm',
+    stlModifierDisabledHint: 'Glättungs- und Fuzzy-Skin-Matrizen erfordern Bambu 3MF, um Slicer-Modifikatoren pro Feld beizubehalten. Bitte Bambu 3MF laden.'
   },
 
   fr: {
@@ -481,7 +508,16 @@ export const TRANSLATIONS = {
     supportModalMsg: 'Ce projet open-source a demandé de nombreuses nuits de travail pour les makers Bambu Lab ! Si cela vous a aidé, un petit Like ❤️ ou un Boost 🚀 sur MakerWorld ferait chaud au cœur ! (｡•̀ᴗ-)✧',
     supportModalBoostBtn: '🚀 Like & Boost sur MakerWorld !',
     supportModalLaterBtn: 'Plus tard, place à l\'impression !',
-    supportModalDontShow: 'Ne plus afficher ce message'
+    supportModalDontShow: 'Ne plus afficher ce message',
+    viewTop: 'Dessus',
+    viewIso: 'Iso',
+    viewFront: 'Face',
+    viewSide: 'Côté',
+    toggleWireframe: 'Afficher/masquer filaire',
+    toggleAutoRotate: 'Rotation automatique',
+    recalculatingGeo: 'Recalcul de la géométrie 3D...',
+    bedSizeInfo: 'Plateau Bambu Lab X1C / P1S : 256 × 256 mm',
+    stlModifierDisabledHint: 'Les matrices de lissage et Fuzzy Skin nécessitent Bambu 3MF pour conserver les modificateurs par cellule. Utilisez Télécharger Bambu 3MF.'
   },
 
   es: {
@@ -599,7 +635,16 @@ export const TRANSLATIONS = {
     supportModalMsg: '¡Este proyecto open-source requirió muchas noches de trabajo para la comunidad Bambu Lab! Si te ahorró filamento o mejoró tus impresiones, ¡un Like ❤️ o un Boost 🚀 en MakerWorld me alegraría el día! (｡•̀ᴗ-)✧',
     supportModalBoostBtn: '🚀 ¡Dar Like y Boost en MakerWorld!',
     supportModalLaterBtn: '¡Quizás luego, a imprimir!',
-    supportModalDontShow: 'No volver a mostrar'
+    supportModalDontShow: 'No volver a mostrar',
+    viewTop: 'Superior',
+    viewIso: 'Iso',
+    viewFront: 'Frontal',
+    viewSide: 'Lateral',
+    toggleWireframe: 'Alternar malla',
+    toggleAutoRotate: 'Rotación automática',
+    recalculatingGeo: 'Recalculando geometría 3D...',
+    bedSizeInfo: 'Tamaño de cama Bambu Lab X1C / P1S: 256 × 256 mm',
+    stlModifierDisabledHint: 'Las matrices de alisado y Fuzzy Skin requieren Bambu 3MF para conservar los modificadores por celda. Usa Descargar Bambu 3MF.'
   },
 
   it: {
@@ -717,7 +762,16 @@ export const TRANSLATIONS = {
     supportModalMsg: 'Questo progetto open-source ha richiesto molte notti di lavoro per i maker Bambu Lab! Se ti ha aiutato a risparmiare filamento, un Like ❤️ o un Boost 🚀 su MakerWorld significherebbe tantissimo! (｡•̀ᴗ-)✧',
     supportModalBoostBtn: '🚀 Like & Boost su MakerWorld!',
     supportModalLaterBtn: 'Forse più tardi, ora stampo!',
-    supportModalDontShow: 'Non mostrare più'
+    supportModalDontShow: 'Non mostrare più',
+    viewTop: 'Alto',
+    viewIso: 'Iso',
+    viewFront: 'Fronte',
+    viewSide: 'Lato',
+    toggleWireframe: 'Attiva/disattiva wireframe',
+    toggleAutoRotate: 'Rotazione automatica',
+    recalculatingGeo: 'Ricalcolo geometria 3D...',
+    bedSizeInfo: 'Piatto Bambu Lab X1C / P1S: 256 × 256 mm',
+    stlModifierDisabledHint: 'Le matrici Ironing e Fuzzy Skin richiedono Bambu 3MF per mantenere i modificatori per singola cella. Usa Scarica Bambu 3MF.'
   },
 
   nl: {
@@ -835,9 +889,32 @@ export const TRANSLATIONS = {
     supportModalMsg: 'Dit open-source project is met veel liefde gemaakt voor Bambu Lab-makers! Als het je filament heeft bespaard of mooie prints heeft opgeleverd, zou een Like ❤️ of Boost 🚀 op MakerWorld geweldig zijn! (｡•̀ᴗ-)✧',
     supportModalBoostBtn: '🚀 Like & Boost op MakerWorld!',
     supportModalLaterBtn: 'Misschien later, eerst printen!',
-    supportModalDontShow: 'Niet meer weergeven'
+    supportModalDontShow: 'Niet meer weergeven',
+    viewTop: 'Boven',
+    viewIso: 'Iso',
+    viewFront: 'Voor',
+    viewSide: 'Zij',
+    toggleWireframe: 'Draadmodel wisselen',
+    toggleAutoRotate: 'Automatisch draaien',
+    recalculatingGeo: '3D-geometrie herberekenen...',
+    bedSizeInfo: 'Bambu Lab X1C / P1S Printbed: 256 × 256 mm',
+    stlModifierDisabledHint: 'Strijk- en Fuzzy Skin-matrices vereisen Bambu 3MF om slicer-modifiers per cel te behouden. Gebruik Download Bambu 3MF.'
   }
 };
+
+export function detectInitialLang() {
+  if (typeof navigator === 'undefined') return 'en';
+  const candidates = Array.isArray(navigator.languages) && navigator.languages.length > 0
+    ? navigator.languages
+    : [navigator.language || 'en'];
+  const supported = new Set(['zh', 'de', 'fr', 'es', 'it', 'nl', 'en']);
+  for (const locale of candidates) {
+    if (!locale) continue;
+    const prefix = locale.toLowerCase().split('-')[0];
+    if (supported.has(prefix)) return prefix;
+  }
+  return 'en';
+}
 
 export function getTranslation(lang = 'en') {
   return TRANSLATIONS[lang] || TRANSLATIONS.en;

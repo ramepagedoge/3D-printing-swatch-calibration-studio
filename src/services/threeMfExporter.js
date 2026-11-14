@@ -201,11 +201,11 @@ ${partsConfigXml}  </object>
   projCfg['version'] = '02.07.01.62';
 
   // Only inject targeted test parameters when relevant, keeping user defaults for everything else
-  if (presetId === 'bridge' || params.bridgeSpeed !== undefined) {
+  if (presetId === 'bridge') {
     projCfg['bridge_speed'] = [String(params.bridgeSpeed || 50), String(params.bridgeSpeed || 50)];
     projCfg['bridge_flow'] = String(params.bridgeFlow || 0.95);
   }
-  if (presetId === 'ironing' || params.flowRatio !== undefined) {
+  if (presetId === 'ironing') {
     projCfg['flow_ratio'] = [String(params.flowRatio || 0.98)];
   }
 
@@ -224,11 +224,12 @@ ${partsConfigXml}  </object>
 
   // If multi-part matrix contains per-part fuzzy skin settings, global fuzzy is 'none'
   const hasFuzzyParts = parts.some(p => p.meta && p.meta.fuzzy_skin);
-  projCfg['fuzzy_skin_noise_type'] = params.fuzzyNoiseType || 'classic';
   if (hasFuzzyParts) {
     projCfg['fuzzy_skin'] = 'none';
+    projCfg['fuzzy_skin_noise_type'] = params.fuzzyNoiseType || 'classic';
   } else if (params.enableFuzzy) {
     projCfg['fuzzy_skin'] = 'all';
+    projCfg['fuzzy_skin_noise_type'] = params.fuzzyNoiseType || 'classic';
     projCfg['fuzzy_skin_point_distance'] = String(params.fuzzyPointDistance || 0.5);
     projCfg['fuzzy_skin_thickness'] = String(params.fuzzyThickness || 0.3);
   }

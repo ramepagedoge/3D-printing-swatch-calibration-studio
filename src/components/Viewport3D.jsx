@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Eye, RotateCw, Grid, Compass, Maximize2 } from 'lucide-react';
 
-const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerating }, ref) {
+const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerating, t }, ref) {
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
@@ -20,9 +20,15 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
     captureThumbnailBlob: async () => {
       if (!rendererRef.current || !sceneRef.current || !cameraRef.current) return null;
 
-      // Temporarily render clean preview without wireframe/helpers
+      // Temporarily render clean preview without wireframe overlay
+      const wireMesh = wireframeMeshRef.current;
+      const prevWireVisible = wireMesh ? wireMesh.visible : false;
+      if (wireMesh) wireMesh.visible = false;
+
       const canvas = rendererRef.current.domElement;
       rendererRef.current.render(sceneRef.current, cameraRef.current);
+
+      if (wireMesh) wireMesh.visible = prevWireVisible;
 
       return new Promise(resolve => {
         canvas.toBlob(blob => {
@@ -114,8 +120,6 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
     const animate = () => {
       animId = requestAnimationFrame(animate);
       if (controlsRef.current) {
-        controlsRef.current.autoRotate = autoRotate;
-        controlsRef.current.autoRotateSpeed = 2.0;
         controlsRef.current.update();
       }
       renderer.render(scene, camera);
@@ -142,6 +146,14 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
       }
     };
   }, []);
+
+  // Sync OrbitControls autoRotate state without stale closures in the mount loop
+  useEffect(() => {
+    if (controlsRef.current) {
+      controlsRef.current.autoRotate = autoRotate;
+      controlsRef.current.autoRotateSpeed = 2.0;
+    }
+  }, [autoRotate]);
 
   // Update Mesh and Materials
   useEffect(() => {
@@ -246,33 +258,33 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
           className="btn-secondary"
           onClick={() => setCameraView('top')}
           style={{ padding: '6px 10px', fontSize: '12px' }}
-          title="俯視角 (Top View)"
+          title={t?.viewTop || 'Top'}
         >
-          俯視
+          {t?.viewTop || 'Top'}
         </button>
         <button
           className="btn-secondary"
           onClick={() => setCameraView('iso')}
           style={{ padding: '6px 10px', fontSize: '12px' }}
-          title="等角透視 (Isometric)"
+          title={t?.viewIso || 'Iso'}
         >
-          等角
+          {t?.viewIso || 'Iso'}
         </button>
         <button
           className="btn-secondary"
           onClick={() => setCameraView('front')}
           style={{ padding: '6px 10px', fontSize: '12px' }}
-          title="正視角 (Front View)"
+          title={t?.viewFront || 'Front'}
         >
-          正視
+          {t?.viewFront || 'Front'}
         </button>
         <button
           className="btn-secondary"
           onClick={() => setCameraView('side')}
           style={{ padding: '6px 10px', fontSize: '12px' }}
-          title="側視角 (Side View)"
+          title={t?.viewSide || 'Side'}
         >
-          側視
+          {t?.viewSide || 'Side'}
         </button>
       </div>
 
@@ -298,7 +310,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
             background: wireframe ? 'rgba(0, 174, 66, 0.2)' : 'transparent',
             borderColor: wireframe ? 'var(--bambu-green)' : 'transparent'
           }}
-          title="切換線框網格 (Wireframe)"
+          title={t?.toggleWireframe || 'Toggle Wireframe'}
         >
           <Grid size={15} color={wireframe ? '#00ae42' : 'currentColor'} />
         </button>
@@ -310,7 +322,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
             background: autoRotate ? 'rgba(0, 174, 66, 0.2)' : 'transparent',
             borderColor: autoRotate ? 'var(--bambu-green)' : 'transparent'
           }}
-          title="轉盤自動旋轉展示 (Auto-rotate Turntable)"
+          title={t?.toggleAutoRotate || 'Auto-rotate Turntable'}
         >
           <RotateCw size={15} color={autoRotate ? '#00ae42' : 'currentColor'} />
         </button>
@@ -340,7 +352,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
           }} />
           <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
           <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-main)' }}>
-            正在重新計算 3D 陰刻幾何體...
+            {t?.recalculatingGeo || 'Recalculating 3D Geometry...'}
           </div>
         </div>
       )}
@@ -357,7 +369,7 @@ const Viewport3D = forwardRef(function Viewport3D({ geometry, params, isGenerati
         borderRadius: '6px',
         border: '1px solid var(--border)'
       }}>
-        Bambu Lab X1C / P1S 熱床尺寸: 256 × 256 mm
+        {t?.bedSizeInfo || 'Bambu Lab X1C / P1S Bed Size: 256 × 256 mm'}
       </div>
     </div>
   );

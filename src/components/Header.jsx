@@ -1,18 +1,26 @@
 import React from 'react';
-import { Download, Box, Copy, Check, Info, Sparkles, Globe } from 'lucide-react';
+import { Download, Box, Info, Sparkles, Globe } from 'lucide-react';
 import { LANGUAGES } from '../i18n/translations';
 
 export default function Header({
+  presetId,
   onExport3MF,
   onExportSTL,
-  onCopySpecs,
   isGenerating,
-  copied,
   onOpenInfo,
   lang,
   setLang,
   t
 }) {
+  const requires3MF = presetId === 'ironing' || presetId === 'fuzzy';
+
+  const handleSTLClick = () => {
+    if (requires3MF) {
+      alert(t.stlModifierDisabledHint);
+      return;
+    }
+    onExportSTL();
+  };
   return (
     <header className="glass-panel" style={{
       height: '56px',
@@ -96,18 +104,11 @@ export default function Header({
 
         <button
           className="btn-secondary"
-          onClick={onCopySpecs}
-          title={t.copySpecs}
-        >
-          {copied ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
-          <span>{copied ? t.copied : t.copySpecs}</span>
-        </button>
-
-        <button
-          className="btn-secondary"
-          onClick={onExportSTL}
+          onClick={handleSTLClick}
           disabled={isGenerating}
-          title={t.exportSTL}
+          aria-disabled={isGenerating || requires3MF}
+          style={requires3MF ? { opacity: 0.45, cursor: 'not-allowed' } : undefined}
+          title={requires3MF ? t.stlModifierDisabledHint : t.exportSTL}
         >
           <Download size={14} />
           <span>{t.exportSTL}</span>
